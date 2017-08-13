@@ -1,8 +1,16 @@
 package strategies;
 
-public class CentrePeriphery implements Strategy {
-    @Override
-    public void execute() {
+import org.gephi.graph.api.Node;
 
+public class CentrePeriphery extends Strategy {
+
+    @Override
+    public void execute(Node node) {
+
+    }
+
+    @Override
+    public Node getNextNode(String centralityType) {
+        return null;
     }
 }
