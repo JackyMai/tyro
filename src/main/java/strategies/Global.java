@@ -25,7 +25,7 @@ public class Global extends Strategy {
 
         for (int i = 0; i < iterations && uncovered.size() != 0; i++) {
             // Establish edge between newcomer and selected node
-            Node nextNode = getNextNode(GraphDistance.BETWEENNESS);
+            Node nextNode = getNextNode(centralityType);
             Edge edge = graphModel.factory().newEdge(newcomer, nextNode, 0, 1f, false);
             graph.addEdge(edge);
 

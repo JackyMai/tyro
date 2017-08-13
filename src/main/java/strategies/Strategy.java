@@ -23,6 +23,7 @@ public abstract class Strategy implements Algorithm {
     GraphModel graphModel;
     UndirectedGraph graph;
     GraphDistance distance;
+    String centralityType = GraphDistance.BETWEENNESS;
     final int iterations = 10;
 
     public void start() {

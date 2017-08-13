@@ -10,10 +10,6 @@ import java.util.Collection;
 public class Local extends Strategy {
     private Collection<Node> covered;
 
-    public Local(String centralityType) {
-        super(centralityType);
-    }
-
     @Override
     public void execute(Node newcomer) {
         int radius = (int) distance.getRadius();
