@@ -38,6 +38,9 @@ public abstract class Strategy implements Algorithm {
         // Generate graph
         importTXT(workspace, "/graph/facebook_combined.txt");
 
+        System.out.println("Successfully imported graph");
+        System.out.println("Calculating initial metrics for graph...");
+
         // Get centrality
         distance = new GraphDistance();
         distance.setDirected(false);
