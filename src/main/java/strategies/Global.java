@@ -11,6 +11,7 @@ import org.gephi.project.api.Workspace;
 import org.gephi.statistics.plugin.GraphDistance;
 import org.openide.util.Lookup;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Global extends Strategy {
@@ -18,6 +19,8 @@ public class Global extends Strategy {
 
     @Override
     public void execute(Node newcomer) {
+        ArrayList<Node> targets = new ArrayList<>();
+
         // Get list of uncovered nodes from input graph
         uncovered = graph.getNodes().toCollection();
 
@@ -25,13 +28,15 @@ public class Global extends Strategy {
 
         for (int i = 0; i < iterations && uncovered.size() != 0; i++) {
             // Establish edge between newcomer and selected node
-            Node nextNode = getNextNode(centralityType);
-            Edge edge = graphModel.factory().newEdge(newcomer, nextNode, 0, 1f, false);
+            Node selectedNode = getNextNode(centralityType);
+            targets.add(selectedNode);
+            Edge edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);
             graph.addEdge(edge);
 
             // Compute all nodes with distance < rad(G) from selected node and remove from uncovered list
-            Collection<Node> neighbors = graph.getNeighbors(nextNode, radius - 1).toCollection();
+            Collection<Node> neighbors = graph.getNeighbors(selectedNode, radius - 1).toCollection();
             uncovered.removeAll(neighbors);
+            uncovered.remove(selectedNode);
         }
     }
 
@@ -46,6 +51,7 @@ public class Global extends Strategy {
             Double centrality = (Double) n.getAttribute(column);
 
             if (centrality >= maxCentrality) {
+                System.out.println(maxCentrality);
                 nextNode = n;
             }
         }
