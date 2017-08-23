@@ -2,14 +2,7 @@ package strategies;
 
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
-import org.gephi.graph.api.UndirectedGraph;
-import org.gephi.project.api.ProjectController;
-import org.gephi.project.api.Workspace;
-import org.gephi.statistics.plugin.GraphDistance;
-import org.openide.util.Lookup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,12 +22,14 @@ public class Global extends Strategy {
         for (int i = 0; i < iterations && uncovered.size() != 0; i++) {
             // Establish edge between newcomer and selected node
             Node selectedNode = getNextNode(centralityType);
-            targets.add(selectedNode);
             Edge edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);
             graph.addEdge(edge);
+            targets.add(selectedNode);
 
             // Compute all nodes with distance < rad(G) from selected node and remove from uncovered list
-            Collection<Node> neighbors = graph.getNeighbors(selectedNode, radius - 1).toCollection();
+            // TODO: get nodes within distance rad(G) instead of immediate neighbours
+            // Make a manual graph and test how getNeighbors work
+            Collection<Node> neighbors = graph.getNeighbors(selectedNode).toCollection();
             uncovered.removeAll(neighbors);
             uncovered.remove(selectedNode);
         }
@@ -51,11 +46,30 @@ public class Global extends Strategy {
             Double centrality = (Double) n.getAttribute(column);
 
             if (centrality >= maxCentrality) {
-                System.out.println(maxCentrality);
                 nextNode = n;
             }
         }
 
         return nextNode;
     }
+
+//    public HashSet<Node> getNeighbors(Node node, int depth) {
+//        HashSet<Node> neighbors = new HashSet<>();
+//        Collection<Node> unvisited = graph.getNeighbors(node).toCollection();
+//
+//        // Add all immediate neighbors to the set
+//        neighbors.addAll(unvisited);
+//
+//        for(int i=0; i<depth; i++) {
+//            for(Node n : unvisited) {
+//                if(!neighbors.contains(n)) {
+//                    unvisited.add
+//                }
+//                // Add all neighbours from current node into set
+//                neighbors.addAll(graph.getNeighbors(n).toCollection());
+//            }
+//        }
+//
+//        return neighbors;
+//    }
 }
