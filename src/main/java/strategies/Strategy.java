@@ -62,6 +62,7 @@ public abstract class Strategy implements Algorithm {
 
         System.out.println("Algorithm completed, calculating metrics for newcomer");
 
+        distance.setNormalized(true);
         distance.execute(graph);
 
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
