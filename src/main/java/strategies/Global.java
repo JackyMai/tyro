@@ -6,6 +6,8 @@ import org.gephi.graph.api.Node;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 public class Global extends Strategy {
     private Collection<Node> uncovered;
@@ -26,10 +28,9 @@ public class Global extends Strategy {
             graph.addEdge(edge);
             targets.add(selectedNode);
 
-            // Compute all nodes with distance < rad(G) from selected node and remove from uncovered list
-            // TODO: get nodes within distance rad(G) instead of immediate neighbours
-            // Make a manual graph and test how getNeighbors work
-            Collection<Node> neighbors = graph.getNeighbors(selectedNode).toCollection();
+            // Compute all immediate neighbours from selected node and remove from uncovered list
+            Collection<Node> neighbors = getNeighborhood(selectedNode, 1);
+            System.out.println(neighbors.size());
             uncovered.removeAll(neighbors);
             uncovered.remove(selectedNode);
         }
@@ -53,23 +54,39 @@ public class Global extends Strategy {
         return nextNode;
     }
 
-//    public HashSet<Node> getNeighbors(Node node, int depth) {
-//        HashSet<Node> neighbors = new HashSet<>();
-//        Collection<Node> unvisited = graph.getNeighbors(node).toCollection();
-//
-//        // Add all immediate neighbors to the set
-//        neighbors.addAll(unvisited);
-//
-//        for(int i=0; i<depth; i++) {
-//            for(Node n : unvisited) {
-//                if(!neighbors.contains(n)) {
-//                    unvisited.add
-//                }
-//                // Add all neighbours from current node into set
-//                neighbors.addAll(graph.getNeighbors(n).toCollection());
-//            }
-//        }
-//
-//        return neighbors;
-//    }
+    public HashSet<Node> getNeighborhood(Node root, int depth) {
+        HashSet<Node> neighbourhood = new HashSet<>();
+        LinkedList<Node> queue = new LinkedList<>();
+        LinkedList<Node> nextQueue = new LinkedList<>();
+
+        // Use root node as starting point
+        neighbourhood.add(root);
+        queue.add(root);
+
+        for(int i=0; i<depth; i++) {
+            // Iterate through all nodes at current depth to find unvisited neighbours
+            while(!queue.isEmpty()) {
+                Node currentNode = queue.pop();
+                Collection<Node> currentNeighbours = graph.getNeighbors(currentNode).toCollection();
+
+                // Iterate through all immediate neighbours to find new neighbours
+                for(Node n : currentNeighbours) {
+                    // Only add to neighbourhood and queue if node is unvisited
+                    if(!neighbourhood.contains(n)) {
+                        neighbourhood.add(n);
+                        nextQueue.add(n);   // Unvisited nodes for next depth
+                    }
+                }
+            }
+
+            // Replace current queue with queue for next depth
+            queue.addAll(nextQueue);
+            nextQueue.clear();
+        }
+
+        // Make sure the neighbourhood doesn't contain the root node itself
+        neighbourhood.remove(root);
+
+        return neighbourhood;
+    }
 }
