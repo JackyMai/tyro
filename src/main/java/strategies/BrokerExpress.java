@@ -31,6 +31,14 @@ public class BrokerExpress extends Strategy {
             uncovered.removeAll(endNeighbors);
             uncovered.remove(startNode);
             uncovered.remove(endNode);
+
+            if(visualise) {
+                startNode.setColor(visualizer.getColor(i));
+                startNode.setSize(40);
+                endNode.setColor(visualizer.getColor(i));
+                endNode.setSize(40);
+                visualizer.updateView();
+            }
         }
     }
 

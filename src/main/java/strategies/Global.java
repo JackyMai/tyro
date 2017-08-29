@@ -24,16 +24,16 @@ public class Global extends Strategy {
         int depth = (int) Math.round(Math.log(radius));
 
         for (int i = 0; i < iterations && uncovered.size() != 0; i++) {
-            // Establish edge between newcomer and selected node
+            // Find next node from list of uncovered node
             Node selectedNode = getNextNode(centralityType);
-
-            if(visualise) {
-                selectedNode.setColor(getColor(i));
-                selectedNode.setSize(40);
-            }
-
             targets.add(selectedNode);
 
+//            if(visualise) {
+//                selectedNode.setColor(visualizer.getColor(i));
+//                selectedNode.setSize(40);
+//            }
+
+            // Establish edge between newcomer and selected node
             Edge edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);
             graph.addEdge(edge);
             targets.add(selectedNode);
@@ -45,7 +45,9 @@ public class Global extends Strategy {
             uncovered.remove(selectedNode);
 
             if(visualise) {
-                updateView();
+                selectedNode.setColor(visualizer.getColor(i));
+                selectedNode.setSize(40);
+                visualizer.updateView();
             }
         }
     }
@@ -68,7 +70,7 @@ public class Global extends Strategy {
         return nextNode;
     }
 
-    public HashSet<Node> getNeighborhood(Node root, int depth) {
+    private HashSet<Node> getNeighborhood(Node root, int depth) {
         HashSet<Node> neighbourhood = new HashSet<>();
         LinkedList<Node> queue = new LinkedList<>();
         LinkedList<Node> nextQueue = new LinkedList<>();
