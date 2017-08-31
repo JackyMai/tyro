@@ -3,6 +3,7 @@ import strategies.CentrePeriphery;
 import strategies.Global;
 import strategies.Local;
 import strategies.MinLeaf;
+import strategies.Community;
 
 public class Main {
     private static final String GLOBAL = "global";
@@ -10,9 +11,10 @@ public class Main {
     private static final String MINLEAF = "minLeaf";
     private static final String CENTREPERIPHERY = "centrePeriphery";
     private static final String BROKEREXPRESS = "brokerExpress";
+    private static final String COMMUNITY = "community";
 
     public static void main(String args[]) {
-        String strategy = LOCAL;
+        String strategy = COMMUNITY;
 
         switch (strategy) {
             case GLOBAL:
@@ -34,6 +36,10 @@ public class Main {
             case BROKEREXPRESS:
                 BrokerExpress brokerExpress = new BrokerExpress();
                 brokerExpress.start();
+                break;
+            case COMMUNITY:
+                Community community = new Community();
+                community.start();
                 break;
         }
     }

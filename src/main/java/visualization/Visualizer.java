@@ -44,10 +44,7 @@ public class Visualizer {
         previewController = Lookup.getDefault().lookup(PreviewController.class);
         PreviewModelImpl previewModel = (PreviewModelImpl) previewController.getModel();
         PreviewProperties previewProperties = previewModel.getProperties();
-//        previewProperties.putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
-//        previewProperties.putValue(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.DARK_GRAY));
         previewProperties.putValue(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
-//        previewProperties.putValue(PreviewProperty.EDGE_OPACITY, 100);
         previewProperties.putValue(PreviewProperty.BACKGROUND_COLOR, Color.LIGHT_GRAY);
 
         for (Node node : graphModel.getUndirectedGraph().getNodes().toCollection()){
@@ -55,16 +52,15 @@ public class Visualizer {
         }
 
         if(SHOW_GRAPH){
-            //New Processing target, get the PApplet
+            //New Processing target inserted into PreviewSketch (a JPanel)
             G2DTarget target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
             previewSketch = new PreviewSketch(target);
-//        previewController.refreshPreview();
         }
 
         updateView();
 
         if(SHOW_GRAPH) {
-            //Add the applet to a JFrame and display
+            //Add the PreviewSketch to a JFrame and display
             JFrame frame = new JFrame("Tyro");
             frame.setLayout(new BorderLayout());
 
@@ -102,7 +98,7 @@ public class Visualizer {
             privateUpdateView(autoLayout);
         }
 
-        System.out.println("View has updated");
+        System.out.println("Preview has updated");
     }
 
     private void privateUpdateView(AutoLayout autoLayout){
@@ -121,7 +117,7 @@ public class Visualizer {
         }
 
         if (EXPORT_GRAPH) {
-            //Simple PDF export
+            //Simple PNG export, can export .png, .pdf, .svg, etc...
             ExportController ec = Lookup.getDefault().lookup(ExportController.class);
             try {
                 ec.exportFile(new File("preview/Output_" + outputCount + ".png"));
