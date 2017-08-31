@@ -32,7 +32,7 @@ public class Visualizer {
 
     private final boolean SHOW_GRAPH = false;  // ShowGraph doesn't work with a high frame rate
     private final boolean EXPORT_GRAPH = true;
-    private final boolean HIGH_FRAME_RATE = true;
+    private final boolean HIGH_FRAME_RATE = false;
     private final int FRAME_RATE = 60;
 
     public Visualizer(GraphModel graphModel, int iterations) {
