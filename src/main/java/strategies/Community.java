@@ -150,16 +150,17 @@ public class Community extends Strategy {
         // color the newcomer black and every other node white
         Integer newcomerValue = (Integer) partition.getValue(newcomer, graph);
 
-        for (Object object : partition.getValues()) {
-            Integer value = (Integer) object;
+        if(visualise){
+            for (Object object : partition.getValues()) {
+                Integer value = (Integer) object;
 
-            if (value == newcomerValue) {
-                partition.setColor(value, Color.BLACK);
-            } else {
-                partition.setColor(value, Color.WHITE);
+                if (value == newcomerValue) {
+                    partition.setColor(value, Color.BLACK);
+                } else {
+                    partition.setColor(value, Color.WHITE);
+                }
             }
         }
-
         //starting with the largest partition, color the partitions, keep the selectedNodes black, create edge.
         int colorIndex = 0;
         ArrayList<Node> selectedNodes = new ArrayList<>();
@@ -176,9 +177,9 @@ public class Community extends Strategy {
                 Edge edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);
                 graph.addEdge(edge);
 
-                appearanceController.transform(function);
-
                 if (visualise) {
+                    appearanceController.transform(function);
+
                     for (Node targetNode : selectedNodes) {
                         targetNode.setColor(Color.BLACK);
                         targetNode.setSize(40);
