@@ -3,6 +3,7 @@ package visualization;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.io.exporter.api.ExportController;
+import org.gephi.io.exporter.preview.PNGExporter;
 import org.gephi.layout.plugin.AutoLayout;
 import org.gephi.layout.plugin.force.StepDisplacement;
 import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
@@ -32,35 +33,38 @@ public class Visualizer {
 
     private final boolean SHOW_GRAPH = false;  // ShowGraph doesn't work with a high frame rate
     private final boolean EXPORT_GRAPH = true;
-    private final boolean HIGH_FRAME_RATE = false;
+    private final boolean HIGH_FRAME_RATE = true;
     private final int FRAME_RATE = 60;
+
+    private final int SCREENSHOT_WIDTH = 1920;
+    private final int SCREENSHOT_HEIGHT = 1080;
 
     public Visualizer(GraphModel graphModel, int iterations) {
         this.graphModel = graphModel;
         this.iterations = iterations;
     }
 
-    public void setUpView(){
+    public void setUpView() {
         previewController = Lookup.getDefault().lookup(PreviewController.class);
         PreviewModelImpl previewModel = (PreviewModelImpl) previewController.getModel();
         PreviewProperties previewProperties = previewModel.getProperties();
         previewProperties.putValue(PreviewProperty.EDGE_CURVED, Boolean.FALSE);
         previewProperties.putValue(PreviewProperty.BACKGROUND_COLOR, Color.LIGHT_GRAY);
 
-        for (Node node : graphModel.getUndirectedGraph().getNodes().toCollection()){
+        for (Node node : graphModel.getUndirectedGraph().getNodes().toCollection()) {
             node.setColor(Color.WHITE);
         }
 
-        if(SHOW_GRAPH){
-            //New Processing target inserted into PreviewSketch (a JPanel)
+        if (SHOW_GRAPH) {
+            // New Processing target inserted into PreviewSketch (a JPanel)
             G2DTarget target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
             previewSketch = new PreviewSketch(target);
         }
 
         updateView();
 
-        if(SHOW_GRAPH) {
-            //Add the PreviewSketch to a JFrame and display
+        if (SHOW_GRAPH) {
+            // Add the PreviewSketch to a JFrame and display
             JFrame frame = new JFrame("Tyro");
             frame.setLayout(new BorderLayout());
 
@@ -117,10 +121,15 @@ public class Visualizer {
         }
 
         if (EXPORT_GRAPH) {
-            //Simple PNG export, can export .png, .pdf, .svg, etc...
+            // Simple PNG export, can export .png, .pdf, .svg, etc...
             ExportController ec = Lookup.getDefault().lookup(ExportController.class);
+            PNGExporter pngExporter = (PNGExporter) ec.getExporter("png");
+            pngExporter.setWidth(SCREENSHOT_WIDTH);
+            pngExporter.setHeight(SCREENSHOT_HEIGHT);
+
             try {
-                ec.exportFile(new File("preview/Output_" + outputCount + ".png"));
+                ec.exportFile(new File("preview/Output_" + outputCount + ".png"), pngExporter);
+//                ec.exportFile(new File("preview/Output_" + outputCount + ".png"));
             } catch (IOException ex) {
                 ex.printStackTrace();
                 return;
