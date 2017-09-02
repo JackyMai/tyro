@@ -27,6 +27,8 @@ public abstract class Strategy implements Algorithm {
     String centralityType = GraphDistance.BETWEENNESS;
     final int iterations = 10;
 
+    String filePath = "/graph/facebook_combined.txt";
+
     Visualizer visualizer;
     boolean visualise = true;
 
@@ -39,15 +41,15 @@ public abstract class Strategy implements Algorithm {
         graph = graphModel.getUndirectedGraph();
 
         // Generate graph
-        importTXT(workspace, "/graph/facebook_combined.txt");
+        importTXT(workspace, filePath);
 
         System.out.println("Successfully imported graph");
 
         // Set up visualization if enabled
         if (visualise) {
-            System.out.println("start setting up JFrame");
             visualizer = new Visualizer(graphModel, iterations);
             visualizer.setUpView();
+            System.out.println("Start setting up view");
         }
 
         System.out.println("Calculating initial metrics for graph...");
@@ -90,7 +92,6 @@ public abstract class Strategy implements Algorithm {
         System.out.println("Betweenness of newcomer is: " + newcomer.getAttribute(betweenness));
         System.out.println("Closeness of newcomer is: " + newcomer.getAttribute(closeness));
         System.out.println("Eccentricity of newcomer is: " + newcomer.getAttribute(eccentricity));
-
     }
 
     private void importTXT(Workspace workspace, String filePath) {
@@ -126,25 +127,4 @@ public abstract class Strategy implements Algorithm {
 
         importController.process(container, new DefaultProcessor(), workspace);
     }
-
-    //    public void generateNWS(Workspace workspace, UndirectedGraph graph) {
-//        Container container = Lookup.getDefault().lookup(Container.Factory.class).newContainer();
-//        FilterController filterController = Lookup.getDefault().lookup(FilterController.class);
-//
-//        RandomGraph randomGraph = new RandomGraph();
-//        randomGraph.setNumberOfNodes(1000);
-//        randomGraph.setWiringProbability(0.005);
-//        randomGraph.generate(container.getLoader());
-//
-//        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
-//        importController.process(container, new DefaultProcessor(), workspace);
-//
-//        // Remove all nodes with no neighbor, i.e. isolated nodes
-//        for (Node n : graph.getNodes().toArray()) {
-//            Node[] neighbors = graph.getNeighbors(n).toArray();
-//            if (neighbors.length == 0) {
-//                graph.removeNode(n);
-//            }
-//        }
-//    }
 }
