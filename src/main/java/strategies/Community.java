@@ -10,8 +10,10 @@ import org.gephi.statistics.plugin.GraphDistance;
 import org.gephi.statistics.plugin.Modularity;
 import org.openide.util.Lookup;
 
+
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This algorithm uses the Louvain method to find the modularity of the nodes in the graph,
@@ -20,42 +22,40 @@ import java.util.ArrayList;
  * (starting with the selectedNodes with the larger partitions).
  */
 public class Community extends Strategy {
+    private static final String STARTING = "starting";
+    private static final String INCREASING = "increasing";
+    private static final String DECREASING = "decreasing";
 
-    private  static final String STARTING = "starting";
-    private  static final String INCREASING = "increasing";
-    private  static final String DECREASING = "decreasing";
+    private Node newcomer;
+    private AppearanceController appearanceController;
+    private AppearanceModel appearanceModel;
+    private Modularity modularity;
+    private Function function;
+    private Partition partition;
 
-    Node newcomer;
-    AppearanceController appearanceController;
-    AppearanceModel appearanceModel;
-    Modularity modularity;
-    Function function;
-    Partition partition;
+    private String condition;
+    private double resolution;
+    private double increment;
+    private int communitiesNeeded;
 
-    double resolution;
-    double increment;
-    String condition;
-    int communitiesNeeded;
-
-    Pair<Node, Double>[] record;
+    private Pair<Node, Double>[] record;
 
     @Override
     public void execute(Node newcomer) {
-
         this.newcomer = newcomer;
 
         appearanceController = Lookup.getDefault().lookup(AppearanceController.class);
         appearanceModel = appearanceController.getModel();
 
-        //Modularity is calculated by Louvain method for community detection
+        // Modularity is calculated by Louvain method for community detection
         modularity = new Modularity();
 
-        // the number of communities has to equal to the number of iterations
-        // the higher the resolution, the fewer communities are found
+        // Number of communities has to equal to the number of iterations
+        // The higher the resolution, the fewer communities are found
         resolution = 1.0;
         increment = 0.5;
         condition = STARTING;
-        communitiesNeeded = iterations + 1; // the extra community is to hold the Newcomer.
+        communitiesNeeded = iterations + 1; // The extra community is to hold the Newcomer.
 
         boolean foundAppropriateResolution = false;
 
@@ -72,10 +72,10 @@ public class Community extends Strategy {
      * This method will increase the resolution if there are too many communities,
      * it will decrease the resolution if there are too few communities.
      *
-     * @return if true, then the resolution will produce the right number of commmunities.
+     * @return if true, then the resolution will produce the right number of communities.
      */
-    private boolean refineResolution(){
-        //find modularity with current resolution
+    private boolean refineResolution() {
+        // Find modularity with current resolution
         modularity.setResolution(resolution);
         modularity.execute(graphModel);
         Column modColumn = graphModel.getNodeTable().getColumn(Modularity.MODULARITY_CLASS);
@@ -90,18 +90,18 @@ public class Community extends Strategy {
             return false;
         }
 
-        //refine resolution so that the correct number of communities are found
-        if (partition.size() == communitiesNeeded){
+        // Refine resolution so that the correct number of communities are found
+        if (partition.size() == communitiesNeeded) {
             return true;
-        }else if (partition.size() > communitiesNeeded){
-            if (condition == DECREASING){
+        } else if (partition.size() > communitiesNeeded) {
+            if (Objects.equals(condition, DECREASING)) {
                 increment /= 2;
             }
             condition = INCREASING;
             resolution += increment;
             return false;
-        } else  if (partition.size() < communitiesNeeded){
-            if (condition == INCREASING){
+        } else if (partition.size() < communitiesNeeded) {
+            if (Objects.equals(condition, INCREASING)) {
                 increment /= 2;
             }
             condition = DECREASING;
@@ -114,12 +114,12 @@ public class Community extends Strategy {
     /**
      * This method finds the node with the highest centrality and places it in an array called record.
      */
-    private void getTargetNodes(){
+    private void getTargetNodes() {
         distance.setNormalized(true);
         distance.execute(graph);
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
-        //find the node with the highest centrality of each partition.
+        // Find the node with the highest centrality of each partition.
         // Pair[0] is for the partition with the value of 0, the Double is the betweenness of the Node.
         record = new Pair[partition.size()];
 
@@ -130,7 +130,6 @@ public class Community extends Strategy {
 
             if (record[value] == null) {
                 record[value] = new Pair<>(node, nodeBetweenness);
-
             } else {
                 Double maxBetweenness = record[value].getValue();
 
@@ -146,22 +145,23 @@ public class Community extends Strategy {
      * The selected nodes that belong to larger partitions have their edges created earlier.
      * If visualisation is enabled, as each edge is created, the respective partition is colored.
      */
-    private void createEdges(){
-        // color the newcomer black and every other node white
+    private void createEdges() {
+        // Color the newcomer black and every other node white
         Integer newcomerValue = (Integer) partition.getValue(newcomer, graph);
 
-        if(visualise){
+        if(visualise) {
             for (Object object : partition.getValues()) {
                 Integer value = (Integer) object;
 
-                if (value == newcomerValue) {
+                if (Objects.equals(value, newcomerValue)) {
                     partition.setColor(value, Color.BLACK);
                 } else {
                     partition.setColor(value, Color.WHITE);
                 }
             }
         }
-        //starting with the largest partition, color the partitions, keep the selectedNodes black, create edge.
+
+        // Starting with the largest partition, color the partitions, keep the selectedNodes black, create edge.
         int colorIndex = 0;
         ArrayList<Node> selectedNodes = new ArrayList<>();
 
@@ -171,7 +171,7 @@ public class Community extends Strategy {
 
             selectedNodes.add(selectedNode);
 
-            if (value != newcomerValue) {
+            if (!Objects.equals(value, newcomerValue)) {
                 if (visualise) partition.setColor(value, visualizer.getColor(colorIndex++));
 
                 Edge edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);
