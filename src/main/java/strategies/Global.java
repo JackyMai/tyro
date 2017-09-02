@@ -28,11 +28,6 @@ public class Global extends Strategy {
             Node selectedNode = getNextNode(centralityType);
             targets.add(selectedNode);
 
-//            if(visualise) {
-//                selectedNode.setColor(visualizer.getColor(i));
-//                selectedNode.setSize(40);
-//            }
-
             // Establish edge between newcomer and selected node
             Edge edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);
             graph.addEdge(edge);
