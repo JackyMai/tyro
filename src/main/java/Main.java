@@ -1,3 +1,4 @@
+import strategies.BrokerConnect;
 import strategies.BrokerExpress;
 import strategies.BrokerHybrid;
 import strategies.CentrePeriphery;
@@ -8,13 +9,14 @@ import strategies.Community;
 public class Main {
     private static final String GLOBAL = "global";
     private static final String LOCAL = "local";
-    private static final String CENTREPERIPHERY = "centrePeriphery";
-    private static final String BROKEREXPRESS = "brokerExpress";
-    private static final String BROKERHYBRID = "brokerHybrid";
+    private static final String CENTRE_PERIPHERY = "centrePeriphery";
+    private static final String BROKER_CONNECT = "brokerConnect";
+    private static final String BROKER_EXPRESS = "brokerExpress";
+    private static final String BROKER_HYBRID = "brokerHybrid";
     private static final String COMMUNITY = "community";
 
     public static void main(String args[]) {
-        String strategy = COMMUNITY;
+        String strategy = BROKER_CONNECT;
 
         switch (strategy) {
             case GLOBAL:
@@ -25,15 +27,19 @@ public class Main {
                 Local local = new Local();
                 local.start();
                 break;
-            case CENTREPERIPHERY:
+            case CENTRE_PERIPHERY:
                 CentrePeriphery centrePeriphery = new CentrePeriphery();
                 centrePeriphery.start();
                 break;
-            case BROKEREXPRESS:
+            case BROKER_CONNECT:
+                BrokerConnect brokerConnect = new BrokerConnect();
+                brokerConnect.start();
+                break;
+            case BROKER_EXPRESS:
                 BrokerExpress brokerExpress = new BrokerExpress();
                 brokerExpress.start();
                 break;
-            case BROKERHYBRID:
+            case BROKER_HYBRID:
                 BrokerHybrid brokerHybrid = new BrokerHybrid();
                 brokerHybrid.start();
                 break;
