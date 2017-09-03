@@ -12,6 +12,7 @@ import org.gephi.io.importer.plugin.file.ImporterCSV;
 import org.gephi.io.processor.plugin.DefaultProcessor;
 import org.gephi.project.api.ProjectController;
 import org.gephi.project.api.Workspace;
+import org.gephi.statistics.plugin.EigenvectorCentrality;
 import org.gephi.statistics.plugin.GraphDistance;
 import org.openide.util.Lookup;
 import visualization.Visualizer;
@@ -24,13 +25,14 @@ public abstract class Strategy implements Algorithm {
     GraphModel graphModel;
     UndirectedGraph graph;
     GraphDistance distance;
+    EigenvectorCentrality eigenvectorCentrality;
+    Visualizer visualizer;
+
+    // Settings
+    String filePath = "/graph/facebook_combined.txt";
     String centralityType = GraphDistance.BETWEENNESS;
     final int iterations = 10;
-
-    String filePath = "/graph/facebook_combined.txt";
-
-    Visualizer visualizer;
-    boolean visualise = true;
+    final boolean visualise = false;
 
     public void start() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -47,9 +49,9 @@ public abstract class Strategy implements Algorithm {
 
         // Set up visualization if enabled
         if (visualise) {
+            System.out.println("Start setting up view");
             visualizer = new Visualizer(graphModel, iterations);
             visualizer.setUpView();
-            System.out.println("Start setting up view");
         }
 
         System.out.println("Calculating initial metrics for graph...");
@@ -58,6 +60,10 @@ public abstract class Strategy implements Algorithm {
         distance = new GraphDistance();
         distance.setDirected(false);
         distance.execute(graph);
+
+        eigenvectorCentrality = new EigenvectorCentrality();
+        eigenvectorCentrality.setDirected(false);
+        eigenvectorCentrality.execute(graph);
 
         System.out.println("Average shortest path length of graph is: " + distance.getPathLength());
         System.out.println("Diameter of graph is: " + distance.getDiameter());
@@ -82,15 +88,19 @@ public abstract class Strategy implements Algorithm {
 
         System.out.println("Algorithm completed, calculating metrics for newcomer");
 
+        // Update centrality after algorithm ends
         distance.setNormalized(true);
         distance.execute(graph);
+        eigenvectorCentrality.execute(graph);
 
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
         Column closeness = graphModel.getNodeTable().getColumn(GraphDistance.CLOSENESS);
         Column eccentricity = graphModel.getNodeTable().getColumn(GraphDistance.ECCENTRICITY);
+        Column eigenvector = graphModel.getNodeTable().getColumn(EigenvectorCentrality.EIGENVECTOR);
 
         System.out.println("Betweenness of newcomer is: " + newcomer.getAttribute(betweenness));
         System.out.println("Closeness of newcomer is: " + newcomer.getAttribute(closeness));
+        System.out.println("Eigenvector of newcomer is: " + newcomer.getAttribute(eigenvector));
         System.out.println("Eccentricity of newcomer is: " + newcomer.getAttribute(eccentricity));
     }
 
