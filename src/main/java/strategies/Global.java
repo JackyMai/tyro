@@ -19,9 +19,7 @@ public class Global extends Strategy {
         // Get list of uncovered nodes from input graph
         uncovered = graph.getNodes().toCollection();
 
-        // Depth is the natural log of radius rounded to the nearest integer
         int radius = (int) distance.getRadius();
-        int depth = (int) Math.round(Math.log(radius));
 
         for (int i = 0; i < iterations && uncovered.size() != 0; i++) {
             // Find next node from list of uncovered node
@@ -34,8 +32,7 @@ public class Global extends Strategy {
             targets.add(selectedNode);
 
             // Compute all immediate neighbours from selected node and remove from uncovered list
-            Collection<Node> neighbors = getNeighborhood(selectedNode, depth);
-            System.out.println(neighbors.size());
+            Collection<Node> neighbors = getNeighborhood(selectedNode, radius-1);
             uncovered.removeAll(neighbors);
             uncovered.remove(selectedNode);
 
@@ -65,7 +62,7 @@ public class Global extends Strategy {
         return nextNode;
     }
 
-    private HashSet<Node> getNeighborhood(Node root, int depth) {
+    HashSet<Node> getNeighborhood(Node root, int depth) {
         HashSet<Node> neighbourhood = new HashSet<>();
         LinkedList<Node> queue = new LinkedList<>();
         LinkedList<Node> nextQueue = new LinkedList<>();
