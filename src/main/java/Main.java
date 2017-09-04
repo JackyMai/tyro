@@ -16,7 +16,7 @@ public class Main {
     private static final String COMMUNITY = "community";
 
     public static void main(String args[]) {
-        String strategy = BROKER_CONNECT;
+        String strategy = CENTRE_PERIPHERY;
 
         switch (strategy) {
             case GLOBAL:

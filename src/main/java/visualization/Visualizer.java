@@ -1,5 +1,6 @@
 package visualization;
 
+import org.gephi.graph.api.Graph;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
 import org.gephi.io.exporter.api.ExportController;
@@ -26,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Visualizer {
     private GraphModel graphModel;
+    private Graph graph;
     private PreviewController previewController;
     private PreviewSketch previewSketch;
     private int iterations;
@@ -39,8 +41,9 @@ public class Visualizer {
     private final int SCREENSHOT_WIDTH = 1920;
     private final int SCREENSHOT_HEIGHT = 1080;
 
-    public Visualizer(GraphModel graphModel, int iterations) {
-        this.graphModel = graphModel;
+    public Visualizer(Graph graph, int iterations) {
+        this.graph = graph;
+        this.graphModel = graph.getModel();
         this.iterations = iterations;
     }
 
@@ -138,7 +141,26 @@ public class Visualizer {
         }
     }
 
-    public Color getColor(int index) {
-        return new Color(Color.HSBtoRGB((float)index/iterations, (float)1.0, (float)0.6));
+    public Color getColor(int numerator) {
+        return new Color(Color.HSBtoRGB((float)numerator/iterations, (float)1.0, (float)0.6));
+    }
+
+    public Color getColor(float numerator, float denominator) {
+        return new Color(Color.HSBtoRGB(numerator/denominator, (float)1.0, (float)0.6));
+    }
+
+    public void snapShot(String centralityType, String range) {
+        if (EXPORT_GRAPH) {
+            //Simple PNG export, can export .png, .pdf, .svg, etc...
+            ExportController ec = Lookup.getDefault().lookup(ExportController.class);
+            try {
+                ec.exportFile(new File("preview/" + centralityType + "/" + range + "/Output_" + outputCount +
+                        "_" + centralityType + range + ".png"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                return;
+            }
+            outputCount++;
+        }
     }
 }

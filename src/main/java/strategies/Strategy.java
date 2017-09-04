@@ -1,10 +1,6 @@
 package strategies;
 
-import org.gephi.graph.api.Column;
-import org.gephi.graph.api.GraphController;
-import org.gephi.graph.api.GraphModel;
-import org.gephi.graph.api.Node;
-import org.gephi.graph.api.UndirectedGraph;
+import org.gephi.graph.api.*;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.ImportController;
@@ -23,7 +19,7 @@ import java.io.File;
 
 public abstract class Strategy implements Algorithm {
     GraphModel graphModel;
-    UndirectedGraph graph;
+    Graph graph;
     GraphDistance distance;
     EigenvectorCentrality eigenvectorCentrality;
     Visualizer visualizer;
@@ -32,7 +28,7 @@ public abstract class Strategy implements Algorithm {
     String filePath = "/graph/facebook_combined.txt";
     String centralityType = GraphDistance.BETWEENNESS;
     final int iterations = 10;
-    final boolean visualise = false;
+    final boolean visualise = true;
 
     public void start() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -50,7 +46,7 @@ public abstract class Strategy implements Algorithm {
         // Set up visualization if enabled
         if (visualise) {
             System.out.println("Start setting up view");
-            visualizer = new Visualizer(graphModel, iterations);
+            visualizer = new Visualizer(graph, iterations);
             visualizer.setUpView();
         }
 
