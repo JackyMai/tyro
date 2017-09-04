@@ -29,6 +29,7 @@ public abstract class Strategy implements Algorithm {
     String centralityType = GraphDistance.BETWEENNESS;
     final int iterations = 10;
     final boolean visualise = true;
+    boolean presentCentrality = true;
 
     public void start() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -46,7 +47,7 @@ public abstract class Strategy implements Algorithm {
         // Set up visualization if enabled
         if (visualise) {
             System.out.println("Start setting up view");
-            visualizer = new Visualizer(graph, iterations);
+            visualizer = new Visualizer(graph, iterations, presentCentrality);
             visualizer.setUpView();
         }
 
