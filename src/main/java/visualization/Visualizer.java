@@ -33,6 +33,9 @@ public class Visualizer {
     private int iterations;
     private int outputCount = 0;
 
+    private boolean presentCentrality;
+    private CentralityPresenter centralityPresenter;
+
     private final boolean SHOW_GRAPH = false;  // ShowGraph doesn't work with a high frame rate
     private final boolean EXPORT_GRAPH = true;
     private final boolean HIGH_FRAME_RATE = true;
@@ -41,13 +44,18 @@ public class Visualizer {
     private final int SCREENSHOT_WIDTH = 1920;
     private final int SCREENSHOT_HEIGHT = 1080;
 
-    public Visualizer(Graph graph, int iterations) {
+    public Visualizer(Graph graph, int iterations, boolean presentCentrality) {
         this.graph = graph;
         this.graphModel = graph.getModel();
         this.iterations = iterations;
+        this.presentCentrality = presentCentrality;
     }
 
     public void setUpView() {
+        if (presentCentrality) {
+            centralityPresenter = new CentralityPresenter(graph, this);
+        }
+
         previewController = Lookup.getDefault().lookup(PreviewController.class);
         PreviewModelImpl previewModel = (PreviewModelImpl) previewController.getModel();
         PreviewProperties previewProperties = previewModel.getProperties();
@@ -105,6 +113,10 @@ public class Visualizer {
             privateUpdateView(autoLayout);
         }
 
+        if (presentCentrality) {
+            centralityPresenter.present();
+        }
+
         System.out.println("Preview has updated");
     }
 
@@ -132,7 +144,6 @@ public class Visualizer {
 
             try {
                 ec.exportFile(new File("preview/Output_" + outputCount + ".png"), pngExporter);
-//                ec.exportFile(new File("preview/Output_" + outputCount + ".png"));
             } catch (IOException ex) {
                 ex.printStackTrace();
                 return;
