@@ -25,10 +25,10 @@ public abstract class Strategy implements Algorithm {
     Visualizer visualizer;
 
     // Settings
-    String filePath = "/graph/facebook_combined.txt";
+    String filePath = "/graph/watts-strogatz/ws_2000_20.graphml";
     String centralityType = GraphDistance.BETWEENNESS;
     final int iterations = 10;
-    final boolean visualise = true;
+    final boolean visualise = false;
 
     public void start() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -39,7 +39,7 @@ public abstract class Strategy implements Algorithm {
         graph = graphModel.getUndirectedGraph();
 
         // Generate graph
-        importTXT(workspace, filePath);
+        importGraph(workspace, filePath);
 
         System.out.println("Successfully imported graph");
 
@@ -100,30 +100,19 @@ public abstract class Strategy implements Algorithm {
         System.out.println("Eccentricity of newcomer is: " + newcomer.getAttribute(eccentricity));
     }
 
-    private void importTXT(Workspace workspace, String filePath) {
+    private void importGraph(Workspace workspace, String filePath) {
         Container container;
         ImportController importController = Lookup.getDefault().lookup(ImportController.class);
 
         try {
             File file = new File(getClass().getResource(filePath).toURI());
-            container = importController.importFile(file, new ImporterCSV());
-            container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);  // Force UNDIRECTED
-            container.getLoader().setAllowAutoNode(true);  // Create missing nodes
-        } catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
 
-        importController.process(container, new DefaultProcessor(), workspace);
-    }
+            if (filePath.endsWith(".txt")) {
+                container = importController.importFile(file, new ImporterCSV());
+            } else {
+                container = importController.importFile(file);
+            }
 
-    private void importSupportedFormat(Workspace workspace, String filePath) {
-        Container container;
-        ImportController importController = Lookup.getDefault().lookup(ImportController.class);
-
-        try {
-            File file = new File(getClass().getResource(filePath).toURI());
-            container = importController.importFile(file);
             container.getLoader().setEdgeDefault(EdgeDirectionDefault.UNDIRECTED);  // Force UNDIRECTED
             container.getLoader().setAllowAutoNode(true);  // Create missing nodes
         } catch (Exception e) {
