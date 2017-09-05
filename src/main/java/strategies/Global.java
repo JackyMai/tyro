@@ -3,6 +3,7 @@ package strategies;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.statistics.plugin.GraphDistance;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +24,7 @@ public class Global extends Strategy {
 
         for (int i = 0; i < iterations && uncovered.size() != 0; i++) {
             // Find next node from list of uncovered node
-            Node selectedNode = getNextNode(centralityType);
+            Node selectedNode = getNextNode();
             targets.add(selectedNode);
 
             // Establish edge between newcomer and selected node
@@ -44,11 +45,10 @@ public class Global extends Strategy {
         }
     }
 
-    @Override
-    public Node getNextNode(String centralityType) {
+    private Node getNextNode() {
         // Find node with max centrality within list of uncovered node
         Node nextNode = graphModel.factory().newNode();
-        Column column = graphModel.getNodeTable().getColumn(centralityType);
+        Column column = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
         for (Node n : uncovered) {
             Double maxCentrality = (Double) nextNode.getAttribute(column);

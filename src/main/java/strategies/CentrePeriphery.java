@@ -177,9 +177,4 @@ public class CentrePeriphery extends Strategy {
 
         visualizer.updateView();
     }
-
-    @Override
-    public Node getNextNode(String centralityType) {
-        return null;
-    }
 }

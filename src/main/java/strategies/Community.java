@@ -190,9 +190,4 @@ public class Community extends Strategy {
             }
         }
     }
-
-    @Override
-    public Node getNextNode(String centralityType) {
-        return null;
-    }
 }

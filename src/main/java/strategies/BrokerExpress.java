@@ -97,9 +97,4 @@ public class BrokerExpress extends Strategy {
             System.out.println(n.getAttribute(neighbors));
         }
     }
-
-    @Override
-    public Node getNextNode(String centralityType) {
-        return null;
-    }
 }

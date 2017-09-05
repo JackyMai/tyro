@@ -3,6 +3,7 @@ package strategies;
 import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
+import org.gephi.statistics.plugin.GraphDistance;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +22,7 @@ public class Local extends Strategy {
 
         // Find first node with max centrality from input graph
         Node selectedNode = graphModel.factory().newNode();
-        Column column = graphModel.getNodeTable().getColumn(centralityType);
+        Column column = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
         for (Node n : graph.getNodes().toArray()) {
             Double maxCentrality = (Double) selectedNode.getAttribute(column);
@@ -43,7 +44,7 @@ public class Local extends Strategy {
 
         for (int i = 0; i < iterations && covered.size() != 0; i++) {
             // Establish edge between newcomer and selected node
-            selectedNode = getNextNode(centralityType);
+            selectedNode = getNextNode();
             edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);
             graph.addEdge(edge);
             targets.add(selectedNode);
@@ -56,11 +57,10 @@ public class Local extends Strategy {
         }
     }
 
-    @Override
-    public Node getNextNode(String centralityType) {
+    public Node getNextNode() {
         // Find node with max centrality within list of covered node
         Node nextNode = graphModel.factory().newNode();
-        Column column = graphModel.getNodeTable().getColumn(centralityType);
+        Column column = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
         for (Node n : covered) {
             Double maxCentrality = (Double) nextNode.getAttribute(column);

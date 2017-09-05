@@ -26,7 +26,6 @@ public abstract class Strategy implements Algorithm {
 
     // Settings
     String filePath = "/graph/watts-strogatz/ws_2000_20.graphml";
-    String centralityType = GraphDistance.BETWEENNESS;
     final int iterations = 10;
     final boolean visualise = false;
 

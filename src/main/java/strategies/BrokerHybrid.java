@@ -69,9 +69,4 @@ public class BrokerHybrid extends Strategy {
 
         return avgFuncValue + paddingFuncValue;
     }
-
-    @Override
-    public Node getNextNode(String centralityType) {
-        return null;
-    }
 }
