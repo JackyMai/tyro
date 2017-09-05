@@ -33,22 +33,21 @@ public class Visualizer {
     private int iterations;
     private int outputCount = 0;
 
-    private boolean presentCentrality;
-    private CentralityPresenter centralityPresenter;
-
-    private final boolean SHOW_GRAPH = false;  // ShowGraph doesn't work with a high frame rate
-    private final boolean EXPORT_GRAPH = true;
-    private final boolean HIGH_FRAME_RATE = true;
+    private final boolean SHOW_GRAPH = false;  // ShowGraph produces a JFrame (doesn't work with a high frame rate)
+    private final boolean EXPORT_GRAPH = false;
+    private final boolean HIGH_FRAME_RATE = false;
     private final int FRAME_RATE = 60;
+
+    private boolean presentCentrality = false; // enables Centrality Presenter
+    private CentralityPresenter centralityPresenter;
 
     private final int SCREENSHOT_WIDTH = 1920;
     private final int SCREENSHOT_HEIGHT = 1080;
 
-    public Visualizer(Graph graph, int iterations, boolean presentCentrality) {
+    public Visualizer(Graph graph, int iterations) {
         this.graph = graph;
         this.graphModel = graph.getModel();
         this.iterations = iterations;
-        this.presentCentrality = presentCentrality;
     }
 
     public void setUpView() {

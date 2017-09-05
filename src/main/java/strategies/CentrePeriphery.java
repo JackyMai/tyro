@@ -12,7 +12,6 @@ import java.util.Map;
 
 public class CentrePeriphery extends Strategy {
     private Collection<Node> uncovered;
-    private Collection<Node> covered;
     private Node newcomer;
 
     private Double overallMaxDistance = null;
@@ -159,7 +158,7 @@ public class CentrePeriphery extends Strategy {
         HashMap<Node, Double> distances = algorithm.getDistances();
 
         if (overallMaxDistance == null) {
-            overallMaxDistance = algorithm.getMaxDistance() - 1;
+            overallMaxDistance = algorithm.getMaxDistance();
         }
 
         for (Map.Entry<Node, Double> entry : distances.entrySet()) {
@@ -169,8 +168,10 @@ public class CentrePeriphery extends Strategy {
 
             if (!uncovered.contains(candidateNode)) continue;
 
+            // newcomer distance is zero, selected node distance is one, neither will be repainted
             if (visualise) {
-                candidateNode.setColor(visualizer.getColor(candidateDistance.floatValue() - 2, overallMaxDistance.floatValue()));
+                candidateNode.setColor(visualizer.getColor(candidateDistance.floatValue() - 2,
+                        overallMaxDistance.floatValue() - 1));
             }
         }
 
