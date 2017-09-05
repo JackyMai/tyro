@@ -119,6 +119,10 @@ public class Community extends Strategy {
      * This method finds the node with the highest centrality and places it in an array called record.
      */
     private void getTargetNodes() {
+        if (!test) {
+            distance.setNormalized(true);
+            distance.execute(graph);
+        }
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
         // Find the node with the highest centrality of each partition.
