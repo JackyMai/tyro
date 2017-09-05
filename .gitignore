@@ -1,10 +1,15 @@
 .idea/
-out/
-preview/*
 
-!preview/betweenness/absolute/.gitkeep
-!preview/betweenness/relative/.gitkeep
-!preview/closeness/absolute/.gitkeep
-!preview/closeness/relative/.gitkeep
-!preview/eccentricity/absolute/.gitkeep
-!preview/eccentricity/relative/.gitkeep
+out/*
+!out/.gitkeep
+
+preview/Output_*
+
+preview/betweenness/absolute/Output_*
+preview/betweenness/relative/Output_*
+
+preview/closeness/absolute/Output_*
+preview/closeness/relative/Output_*
+
+preview/eccentricity/absolute/Output_*
+preview/eccentricity/relative/Output_*
