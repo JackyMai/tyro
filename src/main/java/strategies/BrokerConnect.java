@@ -12,7 +12,7 @@ import java.util.Collection;
 public class BrokerConnect extends Global {
     private Collection<Node> uncovered;
 
-    public BrokerConnect (String filePath, int iterations, boolean visualise, boolean test, String testFilePath){
+    public BrokerConnect(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
         super(filePath, iterations, visualise, test, testFilePath);
     }
 

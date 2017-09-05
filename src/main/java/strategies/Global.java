@@ -13,7 +13,7 @@ import java.util.LinkedList;
 public class Global extends Strategy {
     private Collection<Node> uncovered;
 
-    public Global (String filePath, int iterations, boolean visualise, boolean test, String testFilePath){
+    public Global(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
         super(filePath, iterations, visualise, test, testFilePath);
     }
 

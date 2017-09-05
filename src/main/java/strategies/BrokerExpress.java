@@ -1,6 +1,5 @@
 package strategies;
 
-import org.gephi.graph.api.Column;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
@@ -11,7 +10,7 @@ import java.util.LinkedList;
 public class BrokerExpress extends Strategy {
     private Collection<Node> uncovered;
 
-    public BrokerExpress (String filePath, int iterations, boolean visualise, boolean test, String testFilePath){
+    public BrokerExpress(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
         super(filePath, iterations, visualise, test, testFilePath);
     }
 
@@ -49,7 +48,7 @@ public class BrokerExpress extends Strategy {
         }
     }
 
-    public Node getStartNode() {
+    private Node getStartNode() {
         // Choose start node with lowest degree
         int minDegree = 0;
         Node startNode = null;
@@ -93,15 +92,5 @@ public class BrokerExpress extends Strategy {
         }
 
         return set.get(set.size()-1);
-    }
-
-    // Creates a "neighbors" column and compute neighbor count for all nodes
-    private void computeNeighborCount() {
-        Column neighbors = graphModel.getNodeTable().addColumn("neighbors", Integer.class);
-
-        for(Node n : graphModel.getGraph().getNodes()) {
-            n.setAttribute(neighbors, graph.getNeighbors(n).toArray().length);
-            System.out.println(n.getAttribute(neighbors));
-        }
     }
 }

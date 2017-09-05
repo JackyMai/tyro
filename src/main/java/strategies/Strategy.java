@@ -1,6 +1,10 @@
 package strategies;
 
-import org.gephi.graph.api.*;
+import org.gephi.graph.api.Column;
+import org.gephi.graph.api.Graph;
+import org.gephi.graph.api.GraphController;
+import org.gephi.graph.api.GraphModel;
+import org.gephi.graph.api.Node;
 import org.gephi.io.importer.api.Container;
 import org.gephi.io.importer.api.EdgeDirectionDefault;
 import org.gephi.io.importer.api.ImportController;
@@ -23,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.nio.file.StandardOpenOption.APPEND;
-import static java.nio.file.StandardOpenOption.CREATE;
 
 
 public abstract class Strategy implements Algorithm {
@@ -34,13 +37,13 @@ public abstract class Strategy implements Algorithm {
     Visualizer visualizer;
 
     // Settings
-    final String graphFilePath;
+    private final String graphFilePath;
+    private final String testFilePath;
     final int iterations;
     final boolean visualise;
     final boolean test;
-    final String testFilePath;
 
-    public Strategy (String graphFilePath, int iterations, boolean visualise, boolean test, String testFilePath){
+    public Strategy(String graphFilePath, int iterations, boolean visualise, boolean test, String testFilePath) {
         this.iterations = iterations;
         this.graphFilePath = graphFilePath;
         this.visualise = visualise;
@@ -72,7 +75,9 @@ public abstract class Strategy implements Algorithm {
 
         findCentralities();
 
-        if (test) exportGraphMetrics(true);
+        if (test) {
+            exportGraphMetrics(true);
+        }
 
         System.out.println("Algorithm has started executing");
 
@@ -98,6 +103,17 @@ public abstract class Strategy implements Algorithm {
         }
     }
 
+    private void findCentralities() {
+        eigenvectorCentrality = new EigenvectorCentrality();
+        eigenvectorCentrality.setDirected(false);
+        eigenvectorCentrality.execute(graph);
+
+        distance = new GraphDistance();
+        distance.setDirected(false);
+        distance.setNormalized(true);
+        distance.execute(graph);
+    }
+
     private void importGraph(Workspace workspace, String filePath) {
         Container container;
         ImportController importController = Lookup.getDefault().lookup(ImportController.class);
@@ -121,19 +137,7 @@ public abstract class Strategy implements Algorithm {
         importController.process(container, new DefaultProcessor(), workspace);
     }
 
-    private void findCentralities(){
-        eigenvectorCentrality = new EigenvectorCentrality();
-        eigenvectorCentrality.setDirected(false);
-        eigenvectorCentrality.execute(graph);
-
-        distance = new GraphDistance();
-        distance.setDirected(false);
-        distance.setNormalized(true);
-        distance.execute(graph);
-    }
-
-    public void exportGraphMetrics(boolean initialMetrics){
-
+    private void exportGraphMetrics(boolean initialMetrics) {
         int first = graphFilePath.lastIndexOf('/');
         int last = graphFilePath.indexOf('.');
         String firstCell = graphFilePath.substring(first +1, last);
@@ -156,8 +160,7 @@ public abstract class Strategy implements Algorithm {
         }
     }
 
-    public void exportUpdatedCentralities(Node newcomer){
-
+    public void exportUpdatedCentralities(Node newcomer) {
         eigenvectorCentrality = new EigenvectorCentrality();
         eigenvectorCentrality.setDirected(false);
         eigenvectorCentrality.execute(graph);

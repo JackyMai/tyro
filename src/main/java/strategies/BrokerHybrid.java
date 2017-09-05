@@ -15,7 +15,7 @@ public class BrokerHybrid extends Strategy {
     private ArrayList<Double> stratOneRankCls = new ArrayList<>();
     private ArrayList<Double> stratTwoRankCls = new ArrayList<>();
 
-    public BrokerHybrid (String filePath, int iterations, boolean visualise, boolean test, String testFilePath){
+    public BrokerHybrid(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
         super(filePath, iterations, visualise, test, testFilePath);
     }
 

@@ -15,9 +15,8 @@ public class CentrePeriphery extends Strategy {
     private Node newcomer;
 
     private Double overallMaxDistance = null;
-    private int currentIteration;
 
-    public CentrePeriphery (String filePath, int iterations, boolean visualise, boolean test, String testFilePath){
+    public CentrePeriphery(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
         super(filePath, iterations, visualise, test, testFilePath);
     }
 
@@ -33,7 +32,7 @@ public class CentrePeriphery extends Strategy {
 
         if (test) exportUpdatedCentralities(newcomer);
 
-        for(currentIteration = 1; currentIteration < iterations && uncovered.size() != 0; currentIteration++) {
+        for(int currentIteration = 1; currentIteration < iterations && uncovered.size() != 0; currentIteration++) {
             connectToPeriphery();
 
             if (test) exportUpdatedCentralities(newcomer);
@@ -43,7 +42,7 @@ public class CentrePeriphery extends Strategy {
     /**
      * This method connects the newcomer to the centre of the graph with a new edge
      */
-    private void connectToCentre(){
+    private void connectToCentre() {
         if (!test) {
             distance.setNormalized(true);
             distance.execute(graph);
@@ -76,7 +75,7 @@ public class CentrePeriphery extends Strategy {
         //remove selected node from the uncovered collection
         uncovered.remove(selectedNode);
 
-        if (visualise){
+        if (visualise) {
             selectedNode.setSize(40);
             selectedNode.setColor(Color.BLACK);
 
@@ -87,7 +86,7 @@ public class CentrePeriphery extends Strategy {
     /**
      * This method connects the newcomer to the peripheral node the highest centrality, with a new edge.
      */
-    private void connectToPeriphery(){
+    private void connectToPeriphery() {
 
         DijkstraShortestPathAlgorithm algorithm = new DijkstraShortestPathAlgorithm(graph, newcomer);
         algorithm.compute();
@@ -114,11 +113,11 @@ public class CentrePeriphery extends Strategy {
         Node selectedNode = null;
 
         //find candidate Node with the largest betweenness
-        if (furthestNodes.size() == 1){
+        if (furthestNodes.size() == 1) {
             Object[] object = furthestNodes.toArray();
             selectedNode = (Node) object[0];
 
-        }else{
+        } else {
             if (!test) {
                 distance.setNormalized(true);
                 distance.execute(graph);
@@ -128,7 +127,7 @@ public class CentrePeriphery extends Strategy {
             //find the node with the highest centrality.
             Double maxBetweenness = 0.0;
 
-            for (Object object : furthestNodes.toArray()){
+            for (Object object : furthestNodes.toArray()) {
                 Node candidateNode = (Node) object;
                 Double nodeBetweenness = (Double) candidateNode.getAttribute(betweenness);
 
@@ -151,7 +150,7 @@ public class CentrePeriphery extends Strategy {
 
         uncovered.remove(selectedNode);
 
-        if (visualise){
+        if (visualise) {
             selectedNode.setSize(40);
             selectedNode.setColor(Color.BLACK);
             updateView();
@@ -161,8 +160,7 @@ public class CentrePeriphery extends Strategy {
     /**
      * This method repaints the nodes of the selectedNode's community
      */
-    private void updateView(){
-
+    private void updateView() {
         DijkstraShortestPathAlgorithm algorithm = new DijkstraShortestPathAlgorithm(graph, newcomer);
         algorithm.compute();
 
