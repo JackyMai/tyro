@@ -47,7 +47,7 @@ public class BrokerConnect extends Global {
                 selectedNode.setSize(40);
                 visualizer.updateView();
             }
-            exportUpdatedCentralities(newcomer);
+            if (test) exportUpdatedCentralities(newcomer);
         }
     }
 

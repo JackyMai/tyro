@@ -19,10 +19,25 @@ public class Random extends Strategy {
         int nodeCount = graph.getNodeCount();
 
         for (int currentIteration = 1; currentIteration <= iterations; currentIteration++){
-            Node selectedNode = graph.getNode("" + rand.nextInt(nodeCount));
 
-            Edge edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);
-            graph.addEdge(edge);
+            // every once in a long while, the selectedNode is the newcomer, which throws an exception
+            Node selectedNode = null;
+            int id = 0;
+
+            boolean nodeNotFound = true;
+            while(nodeNotFound) {
+                try {
+                    id = rand.nextInt(nodeCount);
+                    selectedNode = graph.getNode("" + id);
+                    Edge edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);
+                    graph.addEdge(edge);
+                }catch (NullPointerException e){
+                    continue;
+                }
+                nodeNotFound = false;
+            }
+
+            if (test) exportUpdatedCentralities(newcomer);
 
             if (visualise){
                 selectedNode.setSize(40);

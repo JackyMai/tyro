@@ -1,10 +1,4 @@
-import strategies.BrokerConnect;
-import strategies.BrokerExpress;
-import strategies.BrokerHybrid;
-import strategies.CentrePeriphery;
-import strategies.Global;
-import strategies.Local;
-import strategies.Community;
+import strategies.*;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -25,8 +19,9 @@ public class Main {
     private static final String COMMUNITY = "community";
 //    private static final String GLOBAL = "global";
 //    private static final String LOCAL = "local";
-    public static final String[] strategies = {BROKER_CONNECT, BROKER_EXPRESS, BROKER_HYBRID, CENTRE_PERIPHERY, COMMUNITY};
-//    public static final String[] strategies = {BROKER_CONNECT};
+    private static final String RANDOM = "random";
+    public static final String[] strategies = {BROKER_CONNECT, BROKER_EXPRESS, BROKER_HYBRID, CENTRE_PERIPHERY, COMMUNITY, RANDOM};
+//    public static final String[] strategies = {RANDOM};
 
     private static final String BA_GRAPH = "barabasi-albert";
     private static final String WS_GRAPH = "watts-strogatz";
@@ -141,6 +136,10 @@ public class Main {
             case COMMUNITY:
                 Community community = new Community(graphFilePath, newEdgesCreated, visualise, test, testFilePath);
                 community.start();
+                break;
+            case RANDOM:
+                Random random = new Random(graphFilePath, newEdgesCreated, visualise, test, testFilePath);
+                random.start();
                 break;
             /*case GLOBAL:
                 Global global = new Global(filePath, newEdgesCreated, visualise);
