@@ -37,6 +37,8 @@ public class BrokerConnect extends Global {
             graph.addEdge(edge);
             targets.add(selectedNode);
 
+            if (test) exportUpdatedCentralities(newcomer);
+
             // Compute all immediate neighbours from selected node and remove from uncovered list
             Collection<Node> neighbors = getNeighborhood(selectedNode, depth);
             uncovered.removeAll(neighbors);

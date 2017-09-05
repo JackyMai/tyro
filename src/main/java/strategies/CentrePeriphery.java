@@ -31,8 +31,12 @@ public class CentrePeriphery extends Strategy {
 
         connectToCentre();
 
+        if (test) exportUpdatedCentralities(newcomer);
+
         for(currentIteration = 1; currentIteration < iterations && uncovered.size() != 0; currentIteration++) {
             connectToPeriphery();
+
+            if (test) exportUpdatedCentralities(newcomer);
         }
     }
 
@@ -40,8 +44,6 @@ public class CentrePeriphery extends Strategy {
      * This method connects the newcomer to the centre of the graph with a new edge
      */
     private void connectToCentre(){
-        distance.setNormalized(true);
-        distance.execute(graph);
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
         //find the node with the highest centrality.
@@ -113,8 +115,6 @@ public class CentrePeriphery extends Strategy {
             selectedNode = (Node) object[0];
 
         }else{
-            distance.setNormalized(true);
-            distance.execute(graph);
             Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
             //find the node with the highest centrality.

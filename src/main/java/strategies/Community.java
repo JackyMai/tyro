@@ -119,8 +119,6 @@ public class Community extends Strategy {
      * This method finds the node with the highest centrality and places it in an array called record.
      */
     private void getTargetNodes() {
-        distance.setNormalized(true);
-        distance.execute(graph);
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
         // Find the node with the highest centrality of each partition.
@@ -180,6 +178,8 @@ public class Community extends Strategy {
 
                 Edge edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);
                 graph.addEdge(edge);
+
+                if (test) exportUpdatedCentralities(newcomer);
 
                 if (visualise) {
                     appearanceController.transform(function);

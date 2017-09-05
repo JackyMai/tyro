@@ -27,7 +27,10 @@ public class BrokerExpress extends Strategy {
             Edge startEdge = graphModel.factory().newEdge(newcomer, startNode, 0, 1f, false);
             Edge endEdge = graphModel.factory().newEdge(newcomer, endNode, 0, 1f, false);
             graph.addEdge(startEdge);
+            if (test) exportUpdatedCentralities(newcomer);
+
             graph.addEdge(endEdge);
+            if (test) exportUpdatedCentralities(newcomer);
 
             Collection<Node> startNeighbors = graph.getNeighbors(startNode).toCollection();
             Collection<Node> endNeighbors = graph.getNeighbors(endNode).toCollection();
