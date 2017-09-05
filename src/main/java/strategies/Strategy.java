@@ -14,7 +14,16 @@ import org.openide.util.Lookup;
 import visualization.Visualizer;
 
 import java.awt.*;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
 
 
 public abstract class Strategy implements Algorithm {
@@ -25,9 +34,19 @@ public abstract class Strategy implements Algorithm {
     Visualizer visualizer;
 
     // Settings
-    String filePath = "/graph/watts-strogatz/ws_2000_20.graphml";
-    final int iterations = 10;
-    final boolean visualise = false;
+    final String graphFilePath;
+    final int iterations;
+    final boolean visualise;
+    final boolean test;
+    final String testFilePath;
+
+    public Strategy (String graphFilePath, int iterations, boolean visualise, boolean test, String testFilePath){
+        this.iterations = iterations;
+        this.graphFilePath = graphFilePath;
+        this.visualise = visualise;
+        this.test = test;
+        this.testFilePath = testFilePath;
+    }
 
     public void start() {
         ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -38,9 +57,9 @@ public abstract class Strategy implements Algorithm {
         graph = graphModel.getUndirectedGraph();
 
         // Generate graph
-        importGraph(workspace, filePath);
+        importGraph(workspace, graphFilePath);
 
-        System.out.println("Successfully imported graph");
+        System.out.println("Successfully imported graph: " + graphFilePath + " for: " + this.getClass());
 
         // Set up visualization if enabled
         if (visualise) {
@@ -51,18 +70,9 @@ public abstract class Strategy implements Algorithm {
 
         System.out.println("Calculating initial metrics for graph...");
 
-        // Get centrality
-        distance = new GraphDistance();
-        distance.setDirected(false);
-        distance.execute(graph);
+        findCentralities();
 
-        eigenvectorCentrality = new EigenvectorCentrality();
-        eigenvectorCentrality.setDirected(false);
-        eigenvectorCentrality.execute(graph);
-
-        System.out.println("Average shortest path length of graph is: " + distance.getPathLength());
-        System.out.println("Diameter of graph is: " + distance.getDiameter());
-        System.out.println("Radius of graph is: " + distance.getRadius());
+        if (test) exportGraphMetrics(true);
 
         System.out.println("Algorithm has started executing");
 
@@ -81,22 +91,11 @@ public abstract class Strategy implements Algorithm {
         // Begin algorithm
         execute(newcomer);
 
-        System.out.println("Algorithm completed, calculating metrics for newcomer");
+        System.out.println("Calculating final metrics for graph...");
 
-        // Update centrality after algorithm ends
-        distance.setNormalized(true);
-        distance.execute(graph);
-        eigenvectorCentrality.execute(graph);
-
-        Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
-        Column closeness = graphModel.getNodeTable().getColumn(GraphDistance.CLOSENESS);
-        Column eccentricity = graphModel.getNodeTable().getColumn(GraphDistance.ECCENTRICITY);
-        Column eigenvector = graphModel.getNodeTable().getColumn(EigenvectorCentrality.EIGENVECTOR);
-
-        System.out.println("Betweenness of newcomer is: " + newcomer.getAttribute(betweenness));
-        System.out.println("Closeness of newcomer is: " + newcomer.getAttribute(closeness));
-        System.out.println("Eigenvector of newcomer is: " + newcomer.getAttribute(eigenvector));
-        System.out.println("Eccentricity of newcomer is: " + newcomer.getAttribute(eccentricity));
+        if (test) {
+            exportGraphMetrics(false);
+        }
     }
 
     private void importGraph(Workspace workspace, String filePath) {
@@ -120,5 +119,70 @@ public abstract class Strategy implements Algorithm {
         }
 
         importController.process(container, new DefaultProcessor(), workspace);
+    }
+
+    private void findCentralities(){
+        eigenvectorCentrality = new EigenvectorCentrality();
+        eigenvectorCentrality.setDirected(false);
+        eigenvectorCentrality.execute(graph);
+
+        distance = new GraphDistance();
+        distance.setDirected(false);
+        distance.setNormalized(true);
+        distance.execute(graph);
+    }
+
+    public void exportGraphMetrics(boolean initialMetrics){
+
+        int first = graphFilePath.lastIndexOf('/');
+        int last = graphFilePath.indexOf('.');
+        String firstCell = graphFilePath.substring(first +1, last);
+
+        String csvString = "";
+        if (initialMetrics) csvString += firstCell;
+
+        csvString += "," + distance.getPathLength() + "," + distance.getDiameter() + "," + distance.getRadius();
+
+        if (!initialMetrics) csvString += "\n";
+
+        byte[] csvData = csvString.getBytes();
+
+        Path path = Paths.get(testFilePath);
+
+        try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(path, APPEND))) {
+            out.write(csvData, 0, csvData.length);
+        } catch (IOException e) {
+            e.getStackTrace();
+        }
+    }
+
+    public void exportUpdatedCentralities(Node newcomer){
+
+        eigenvectorCentrality = new EigenvectorCentrality();
+        eigenvectorCentrality.setDirected(false);
+        eigenvectorCentrality.execute(graph);
+
+        distance = new GraphDistance();
+        distance.setDirected(false);
+        distance.setNormalized(true);
+        distance.execute(graph);
+
+        Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
+        Column closeness = graphModel.getNodeTable().getColumn(GraphDistance.CLOSENESS);
+        Column eccentricity = graphModel.getNodeTable().getColumn(GraphDistance.ECCENTRICITY);
+        Column eigenvector = graphModel.getNodeTable().getColumn(EigenvectorCentrality.EIGENVECTOR);
+
+        String csvString = "," + newcomer.getAttribute(betweenness) + "," + newcomer.getAttribute(closeness) + "," +
+                newcomer.getAttribute(eccentricity) + "," + newcomer.getAttribute(eigenvector);
+
+        byte[] csvData = csvString.getBytes();
+
+        Path path = Paths.get(testFilePath);
+
+        try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(path, APPEND))) {
+            out.write(csvData, 0, csvData.length);
+        } catch (IOException e) {
+            e.getStackTrace();
+        }
     }
 }

@@ -11,6 +11,10 @@ import java.util.LinkedList;
 public class BrokerExpress extends Strategy {
     private Collection<Node> uncovered;
 
+    public BrokerExpress (String filePath, int iterations, boolean visualise, boolean test, String testFilePath){
+        super(filePath, iterations, visualise, test, testFilePath);
+    }
+
     @Override
     public void execute(Node newcomer) {
         uncovered = graph.getNodes().toCollection();

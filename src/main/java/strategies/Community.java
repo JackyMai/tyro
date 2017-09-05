@@ -40,6 +40,10 @@ public class Community extends Strategy {
 
     private Pair<Node, Double>[] record;
 
+    public Community (String filePath, int iterations, boolean visualise, boolean test, String testFilePath){
+        super(filePath, iterations, visualise, test, testFilePath);
+    }
+
     @Override
     public void execute(Node newcomer) {
         this.newcomer = newcomer;

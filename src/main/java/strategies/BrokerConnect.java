@@ -12,6 +12,10 @@ import java.util.Collection;
 public class BrokerConnect extends Global {
     private Collection<Node> uncovered;
 
+    public BrokerConnect (String filePath, int iterations, boolean visualise, boolean test, String testFilePath){
+        super(filePath, iterations, visualise, test, testFilePath);
+    }
+
     @Override
     public void execute(Node newcomer) {
         ArrayList<Node> targets = new ArrayList<>();
@@ -43,6 +47,7 @@ public class BrokerConnect extends Global {
                 selectedNode.setSize(40);
                 visualizer.updateView();
             }
+            exportUpdatedCentralities(newcomer);
         }
     }
 

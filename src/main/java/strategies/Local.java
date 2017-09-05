@@ -13,6 +13,10 @@ public class Local extends Strategy {
     private HashSet<Node> covered;
     private ArrayList<Node> targets;
 
+    public Local (String filePath, int iterations, boolean visualise, boolean test, String testFilePath){
+        super(filePath, iterations, visualise, test, testFilePath);
+    }
+
     @Override
     public void execute(Node newcomer) {
         covered = new HashSet<>();

@@ -17,6 +17,10 @@ public class CentrePeriphery extends Strategy {
     private Double overallMaxDistance = null;
     private int currentIteration;
 
+    public CentrePeriphery (String filePath, int iterations, boolean visualise, boolean test, String testFilePath){
+        super(filePath, iterations, visualise, test, testFilePath);
+    }
+
     @Override
     public void execute(Node node) {
 

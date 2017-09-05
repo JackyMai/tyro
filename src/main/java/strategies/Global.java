@@ -13,6 +13,10 @@ import java.util.LinkedList;
 public class Global extends Strategy {
     private Collection<Node> uncovered;
 
+    public Global (String filePath, int iterations, boolean visualise, boolean test, String testFilePath){
+        super(filePath, iterations, visualise, test, testFilePath);
+    }
+
     @Override
     public void execute(Node newcomer) {
         ArrayList<Node> targets = new ArrayList<>();
