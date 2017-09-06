@@ -73,7 +73,7 @@ public abstract class Strategy implements Algorithm {
 
         System.out.println("Calculating initial metrics for graph...");
 
-        findCentralities();
+        updateCentralities();
 
         if (test) {
             exportGraphMetrics(true);
@@ -103,7 +103,7 @@ public abstract class Strategy implements Algorithm {
         }
     }
 
-    private void findCentralities() {
+    public void updateCentralities() {
         eigenvectorCentrality = new EigenvectorCentrality();
         eigenvectorCentrality.setDirected(false);
         eigenvectorCentrality.execute(graph);
@@ -160,16 +160,7 @@ public abstract class Strategy implements Algorithm {
         }
     }
 
-    public void exportUpdatedCentralities(Node newcomer) {
-        eigenvectorCentrality = new EigenvectorCentrality();
-        eigenvectorCentrality.setDirected(false);
-        eigenvectorCentrality.execute(graph);
-
-        distance = new GraphDistance();
-        distance.setDirected(false);
-        distance.setNormalized(true);
-        distance.execute(graph);
-
+    public void exportCentralities(Node newcomer) {
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
         Column closeness = graphModel.getNodeTable().getColumn(GraphDistance.CLOSENESS);
         Column eccentricity = graphModel.getNodeTable().getColumn(GraphDistance.ECCENTRICITY);
