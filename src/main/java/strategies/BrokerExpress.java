@@ -18,8 +18,8 @@ public class BrokerExpress extends Strategy {
     public void execute(Node newcomer) {
         uncovered = graph.getNodes().toCollection();
 
-        // TODO: should only iterate 10 times
-        for (int i = 0; i < edgeLimit && uncovered.size() != 0; i++) {
+        // Iterating in steps of 2 because two edges are added in every round
+        for (int i = 0; i < edgeLimit && uncovered.size() != 0; i+=2) {
             // Establish edge between newcomer and selected node
             Node startNode = getStartNode();
             Node endNode = getEndNode(startNode);
