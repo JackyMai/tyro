@@ -40,8 +40,8 @@ public class Community extends Strategy {
 
     private Pair<Node, Double>[] record;
 
-    public Community(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
-        super(filePath, iterations, visualise, test, testFilePath);
+    public Community(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
+        super(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
     }
 
     @Override
@@ -54,12 +54,12 @@ public class Community extends Strategy {
         // Modularity is calculated by Louvain method for community detection
         modularity = new Modularity();
 
-        // Number of communities has to equal to the number of iterations
+        // Number of communities has to equal to the number of edgeLimit
         // The higher the resolution, the fewer communities are found
         resolution = 1.0;
         increment = 0.5;
         condition = STARTING;
-        communitiesNeeded = iterations + 1; // The extra community is to hold the Newcomer.
+        communitiesNeeded = edgeLimit + 1; // The extra community is to hold the Newcomer.
 
         boolean foundAppropriateResolution = false;
 
@@ -119,10 +119,11 @@ public class Community extends Strategy {
      * This method finds the node with the highest centrality and places it in an array called record.
      */
     private void getTargetNodes() {
-        if (!test) {
-            distance.setNormalized(true);
-            distance.execute(graph);
-        }
+        if (updateEveryRound) updateCentralities();
+        // if (!export) {
+        //     distance.setNormalized(true);
+        //     distance.execute(graph);
+        // }
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
         // Find the node with the highest centrality of each partition.
@@ -183,8 +184,8 @@ public class Community extends Strategy {
                 Edge edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);
                 graph.addEdge(edge);
 
-                if (test) exportUpdatedCentralities(newcomer);
-
+                if (updateEveryRound) updateCentralities();
+                if (export) exportCentralities(newcomer);
                 if (visualise) {
                     appearanceController.transform(function);
 

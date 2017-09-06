@@ -13,8 +13,8 @@ public class Local extends Strategy {
     private HashSet<Node> covered;
     private ArrayList<Node> targets;
 
-    public Local(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
-        super(filePath, iterations, visualise, test, testFilePath);
+    public Local(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
+        super(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class Local extends Strategy {
         Collection<Node> neighbors = graph.getNeighbors(selectedNode).toCollection();
         covered.addAll(neighbors);
 
-        for (int i = 0; i < iterations && covered.size() != 0; i++) {
+        for (int i = 0; i < edgeLimit && covered.size() != 0; i++) {
             // Establish edge between newcomer and selected node
             selectedNode = getNextNode();
             edge = graphModel.factory().newEdge(newcomer, selectedNode, 0, 1f, false);

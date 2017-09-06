@@ -16,26 +16,26 @@ public class CentrePeriphery extends Strategy {
 
     private Double overallMaxDistance = null;
 
-    public CentrePeriphery(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
-        super(filePath, iterations, visualise, test, testFilePath);
+    public CentrePeriphery(String filePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
+        super(filePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
     }
 
     @Override
     public void execute(Node node) {
-
         this.newcomer = node;
         uncovered = graph.getNodes().toCollection();
-
         uncovered.remove(newcomer);
 
         connectToCentre();
 
-        if (test) exportUpdatedCentralities(newcomer);
+        if (updateEveryRound) updateCentralities();
+        if (export) exportCentralities(newcomer);
 
-        for(int currentIteration = 1; currentIteration < iterations && uncovered.size() != 0; currentIteration++) {
+        for(int currentIteration = 1; currentIteration < edgeLimit && uncovered.size() != 0; currentIteration++) {
             connectToPeriphery();
 
-            if (test) exportUpdatedCentralities(newcomer);
+            if (updateEveryRound) updateCentralities();
+            if (export) exportCentralities(newcomer);
         }
     }
 
@@ -43,10 +43,11 @@ public class CentrePeriphery extends Strategy {
      * This method connects the newcomer to the centre of the graph with a new edge
      */
     private void connectToCentre() {
-        if (!test) {
-            distance.setNormalized(true);
-            distance.execute(graph);
-        }
+        if (updateEveryRound) updateCentralities();
+        // if (!export) {
+        //     distance.setNormalized(true);
+        //     distance.execute(graph);
+        // }
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
         //find the node with the highest centrality.
@@ -116,12 +117,12 @@ public class CentrePeriphery extends Strategy {
         if (furthestNodes.size() == 1) {
             Object[] object = furthestNodes.toArray();
             selectedNode = (Node) object[0];
-
         } else {
-            if (!test) {
-                distance.setNormalized(true);
-                distance.execute(graph);
-            }
+            if (updateEveryRound) updateCentralities();
+            // if (!export) {
+            //     distance.setNormalized(true);
+            //     distance.execute(graph);
+            // }
             Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
             //find the node with the highest centrality.

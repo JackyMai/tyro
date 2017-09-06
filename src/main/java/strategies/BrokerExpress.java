@@ -10,26 +10,30 @@ import java.util.LinkedList;
 public class BrokerExpress extends Strategy {
     private Collection<Node> uncovered;
 
-    public BrokerExpress(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
-        super(filePath, iterations, visualise, test, testFilePath);
+    public BrokerExpress(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
+        super(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
     }
 
     @Override
     public void execute(Node newcomer) {
         uncovered = graph.getNodes().toCollection();
 
-        for(int i=0; i<iterations && uncovered.size() != 0; i++) {
+        // TODO: should only iterate 10 times
+        for (int i = 0; i < edgeLimit && uncovered.size() != 0; i++) {
             // Establish edge between newcomer and selected node
             Node startNode = getStartNode();
             Node endNode = getEndNode(startNode);
 
             Edge startEdge = graphModel.factory().newEdge(newcomer, startNode, 0, 1f, false);
             Edge endEdge = graphModel.factory().newEdge(newcomer, endNode, 0, 1f, false);
+
             graph.addEdge(startEdge);
-            if (test) exportUpdatedCentralities(newcomer);
+            if (updateEveryRound) updateCentralities();
+            if (export) exportCentralities(newcomer);
 
             graph.addEdge(endEdge);
-            if (test) exportUpdatedCentralities(newcomer);
+            if (updateEveryRound) updateCentralities();
+            if (export) exportCentralities(newcomer);
 
             Collection<Node> startNeighbors = graph.getNeighbors(startNode).toCollection();
             Collection<Node> endNeighbors = graph.getNeighbors(endNode).toCollection();
@@ -38,7 +42,7 @@ public class BrokerExpress extends Strategy {
             uncovered.remove(startNode);
             uncovered.remove(endNode);
 
-            if(visualise) {
+            if (visualise) {
                 startNode.setColor(visualizer.getColor(i));
                 startNode.setSize(40);
                 endNode.setColor(visualizer.getColor(i));

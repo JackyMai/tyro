@@ -12,8 +12,8 @@ import java.util.Collection;
 public class BrokerConnect extends Global {
     private Collection<Node> uncovered;
 
-    public BrokerConnect(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
-        super(filePath, iterations, visualise, test, testFilePath);
+    public BrokerConnect(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
+        super(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class BrokerConnect extends Global {
         int radius = (int) distance.getRadius();
         int depth = (int) Math.round(Math.log(radius));
 
-        for (int i = 0; i < iterations && uncovered.size() != 0; i++) {
+        for (int i = 0; i < edgeLimit && uncovered.size() != 0; i++) {
             // Find next node from list of uncovered node
             Node selectedNode = getNextNode();
             targets.add(selectedNode);
@@ -37,19 +37,18 @@ public class BrokerConnect extends Global {
             graph.addEdge(edge);
             targets.add(selectedNode);
 
-            if (test) exportUpdatedCentralities(newcomer);
-
             // Compute all immediate neighbours from selected node and remove from uncovered list
             Collection<Node> neighbors = getNeighborhood(selectedNode, depth);
             uncovered.removeAll(neighbors);
             uncovered.remove(selectedNode);
 
-            if(visualise) {
+            if (updateEveryRound) updateCentralities();
+            if (export) exportCentralities(newcomer);
+            if (visualise) {
                 selectedNode.setColor(visualizer.getColor(i));
                 selectedNode.setSize(40);
                 visualizer.updateView();
             }
-            if (test) exportUpdatedCentralities(newcomer);
         }
     }
 

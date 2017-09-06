@@ -39,15 +39,17 @@ public abstract class Strategy implements Algorithm {
     // Settings
     private final String graphFilePath;
     private final String testFilePath;
-    final int iterations;
+    final int edgeLimit;
+    final boolean updateEveryRound;
     final boolean visualise;
-    final boolean test;
+    final boolean export;
 
-    public Strategy(String graphFilePath, int iterations, boolean visualise, boolean test, String testFilePath) {
-        this.iterations = iterations;
+    public Strategy(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
+        this.edgeLimit = edgeLimit;
         this.graphFilePath = graphFilePath;
+        this.updateEveryRound = updateEveryRound;
         this.visualise = visualise;
-        this.test = test;
+        this.export = export;
         this.testFilePath = testFilePath;
     }
 
@@ -67,7 +69,7 @@ public abstract class Strategy implements Algorithm {
         // Set up visualization if enabled
         if (visualise) {
             System.out.println("Start setting up view");
-            visualizer = new Visualizer(graph, iterations);
+            visualizer = new Visualizer(graph, edgeLimit);
             visualizer.setUpView();
         }
 
@@ -75,7 +77,7 @@ public abstract class Strategy implements Algorithm {
 
         updateCentralities();
 
-        if (test) {
+        if (export) {
             exportGraphMetrics(true);
         }
 
@@ -98,7 +100,7 @@ public abstract class Strategy implements Algorithm {
 
         System.out.println("Calculating final metrics for graph...");
 
-        if (test) {
+        if (export) {
             exportGraphMetrics(false);
         }
     }

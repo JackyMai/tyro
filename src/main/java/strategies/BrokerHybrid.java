@@ -15,8 +15,8 @@ public class BrokerHybrid extends Strategy {
     private ArrayList<Double> stratOneRankCls = new ArrayList<>();
     private ArrayList<Double> stratTwoRankCls = new ArrayList<>();
 
-    public BrokerHybrid(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
-        super(filePath, iterations, visualise, test, testFilePath);
+    public BrokerHybrid(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
+        super(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class BrokerHybrid extends Strategy {
         // Run both algorithms in the first and second round
 
         // TODO: adjust selection of strategy based on edge limit
-        for (int i=0; i < iterations; i++) {
+        for (int i = 0; i < edgeLimit; i++) {
             if (i % 2 == 0) {
                 // Use first strategy
             } else {

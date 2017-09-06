@@ -6,19 +6,17 @@ import org.gephi.graph.api.Node;
 import java.awt.*;
 
 public class Random extends Strategy {
-
     private java.util.Random rand = new java.util.Random();
 
-    public Random(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
-        super(filePath, iterations, visualise, test, testFilePath);
+    public Random(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
+        super(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
     }
 
     @Override
     public void execute(Node newcomer) {
-
         int nodeCount = graph.getNodeCount();
 
-        for (int currentIteration = 1; currentIteration <= iterations; currentIteration++) {
+        for (int currentIteration = 1; currentIteration <= edgeLimit; currentIteration++) {
 
             // every once in a long while, the selectedNode is the newcomer, which throws an exception
             Node selectedNode = null;
@@ -39,10 +37,8 @@ public class Random extends Strategy {
                 nodeNotFound = false;
             }
 
-            if (test) {
-                exportUpdatedCentralities(newcomer);
-            }
-
+            if (updateEveryRound) updateCentralities();
+            if (export) exportCentralities(newcomer);
             if (visualise) {
                 selectedNode.setSize(40);
                 selectedNode.setColor(Color.BLACK);

@@ -13,8 +13,8 @@ import java.util.LinkedList;
 public class Global extends Strategy {
     private Collection<Node> uncovered;
 
-    public Global(String filePath, int iterations, boolean visualise, boolean test, String testFilePath) {
-        super(filePath, iterations, visualise, test, testFilePath);
+    public Global(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
+        super(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class Global extends Strategy {
 
         int radius = (int) distance.getRadius();
 
-        for (int i = 0; i < iterations && uncovered.size() != 0; i++) {
+        for (int i = 0; i < edgeLimit && uncovered.size() != 0; i++) {
             // Find next node from list of uncovered node
             Node selectedNode = getNextNode();
             targets.add(selectedNode);
@@ -41,6 +41,8 @@ public class Global extends Strategy {
             uncovered.removeAll(neighbors);
             uncovered.remove(selectedNode);
 
+            if (updateEveryRound) updateCentralities();
+            if (export) exportCentralities(newcomer);
             if(visualise) {
                 selectedNode.setColor(visualizer.getColor(i));
                 selectedNode.setSize(40);
