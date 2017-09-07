@@ -34,13 +34,15 @@ public class Main {
 
     private static final String[] GRAPH_SIZES = {"250", "500", "750", "1000", "1250", "1500", "1750", "2000"};
 
-    public static  final String FACEBOOK_2k = "socfb-Amherst41";
-    public static  final String FACEBOOK_4k = "facebook_combined";
-    public static  final String FACEBOOK_6k = "socfb-MIT";
-    public static final String[] REAL_WORLD_GRAPHS = {FACEBOOK_2k, FACEBOOK_4k, FACEBOOK_6k};
+    public static  final String FACEBOOK_1400 = "socfb-Haverford76";
+    public static  final String FACEBOOK_2600 = "socfb-Trinity100";
+    public static  final String FACEBOOK_2900 = "ego-facebook";
+    public static  final String FACEBOOK_4000 = "facebook_combined";
+
+    public static final String[] REAL_WORLD_GRAPHS = {FACEBOOK_1400, FACEBOOK_2600, FACEBOOK_2900, FACEBOOK_4000};
 
     private static int edgeLimit = 10;
-    private static boolean updateEveryRound = false;
+    private static boolean updateEveryRound = true;
     private static boolean export = true;
     private static boolean visualise = false;
 
@@ -123,7 +125,7 @@ public class Main {
                 String testFilePath = "./results/" + strategy + "/real-world/" + graphType +".csv";
                 createCsvFile(testFilePath);
 
-                String graphFilePath = "/graph/" + graphType;
+                String graphFilePath = "/graph/real-world/" + graphType;
                 graphFilePath += ".txt";
 
                 executeStrategy(graphFilePath, strategy, testFilePath);
