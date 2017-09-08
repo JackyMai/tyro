@@ -31,15 +31,13 @@ public class Main {
     private static final String BA_GRAPH = "barabasi-albert";
     private static final String WS_GRAPH = "watts-strogatz";
     private static final String[] ARTIFICIAL_GRAPH_TYPES = {BA_GRAPH, WS_GRAPH};
-
     private static final String[] GRAPH_SIZES = {"250", "500", "750", "1000", "1250", "1500", "1750", "2000"};
 
-    public static  final String FACEBOOK_1400 = "socfb-Haverford76";
-    public static  final String FACEBOOK_2600 = "socfb-Trinity100";
-    public static  final String FACEBOOK_2900 = "ego-facebook";
-    public static  final String FACEBOOK_4000 = "facebook_combined";
-
-    public static final String[] REAL_WORLD_GRAPHS = {FACEBOOK_1400, FACEBOOK_2600, FACEBOOK_2900, FACEBOOK_4000};
+    private static final String FACEBOOK_1400 = "socfb-Haverford76";
+    private static final String FACEBOOK_2600 = "socfb-Trinity100";
+    private static final String FACEBOOK_2900 = "ego-facebook";
+    private static final String FACEBOOK_4000 = "facebook_combined";
+    private static final String[] REAL_WORLD_GRAPHS = {FACEBOOK_1400, FACEBOOK_2600, FACEBOOK_2900, FACEBOOK_4000};
 
     private static int edgeLimit = 10;
     private static boolean updateEveryRound = true;
@@ -94,10 +92,8 @@ public class Main {
         data = createCsvTitle();
 
         new File("./results").mkdirs();
-
         for(String strategy : strategies) {
             new File("./results/" + strategy).mkdirs();
-
             for (String graphType : ARTIFICIAL_GRAPH_TYPES) {
                 new File("./results/" + strategy + "/" + graphType).mkdirs();
 
@@ -119,14 +115,13 @@ public class Main {
                     }
                 }
             }
-            new File("./results/" + strategy + "/real-world").mkdirs();
 
+            new File("./results/" + strategy + "/real-world").mkdirs();
             for (String graphType : REAL_WORLD_GRAPHS) {
                 String testFilePath = "./results/" + strategy + "/real-world/" + graphType +".csv";
                 createCsvFile(testFilePath);
 
-                String graphFilePath = "/graph/real-world/" + graphType;
-                graphFilePath += ".txt";
+                String graphFilePath = "/graph/real-world/" + graphType + ".txt";
 
                 executeStrategy(graphFilePath, strategy, testFilePath);
             }
