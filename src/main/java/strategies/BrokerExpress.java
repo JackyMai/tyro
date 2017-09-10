@@ -53,19 +53,19 @@ public class BrokerExpress extends Strategy {
     }
 
     private Node getStartNode() {
-        // Choose start node with lowest degree
-        int minDegree = 0;
+        // Choose start node with maximum degree
+        int maxDegree = 0;
         Node startNode = null;
 
         for(Node n : uncovered) {
             int degree = graph.getDegree(n);
-            if(degree > minDegree) {
+            if(degree > maxDegree) {
                 startNode = n;
-                minDegree = degree;
+                maxDegree = degree;
             }
         }
 
-        if(startNode == null && minDegree == 0) {
+        if(startNode == null && maxDegree == 0) {
             try {
                 throw new NullPointerException();
             } catch (NullPointerException e) {
