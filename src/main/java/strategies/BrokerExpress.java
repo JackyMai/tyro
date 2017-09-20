@@ -20,10 +20,11 @@ public class BrokerExpress extends Strategy {
 
         // Iterating in steps of 2 because two edges are added in every round
         for (int i = 0; i < edgeLimit && uncovered.size() != 0; i+=2) {
-            // Establish edge between newcomer and selected node
+            // Find start node and end node for this iteration
             Node startNode = getStartNode();
             Node endNode = getEndNode(startNode);
 
+            // Establish connections between newcomer and start/end nodes
             Edge startEdge = graphModel.factory().newEdge(newcomer, startNode, 0, 1f, false);
             Edge endEdge = graphModel.factory().newEdge(newcomer, endNode, 0, 1f, false);
 
@@ -35,6 +36,7 @@ public class BrokerExpress extends Strategy {
             if (updateEveryRound) updateCentralities();
             if (export) exportCentralities(newcomer);
 
+            // Remove immediate neighbours of start node and end node from uncovered list
             Collection<Node> startNeighbors = graph.getNeighbors(startNode).toCollection();
             Collection<Node> endNeighbors = graph.getNeighbors(endNode).toCollection();
             uncovered.removeAll(startNeighbors);
