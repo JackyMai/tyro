@@ -105,6 +105,9 @@ public abstract class Strategy implements Algorithm {
         }
     }
 
+    /**
+     * Update values for centralities as well as other commonly used metrics
+     */
     public void updateCentralities() {
         eigenvectorCentrality = new EigenvectorCentrality();
         eigenvectorCentrality.setDirected(false);
@@ -116,6 +119,13 @@ public abstract class Strategy implements Algorithm {
         distance.execute(graph);
     }
 
+    /**
+     * Import a graph from the specified file path
+     * Refer to Gephi's website for a list of supported graph formats
+     *
+     * @param workspace: current workspace for this project
+     * @param filePath: file path of the graph that will be imported
+     */
     private void importGraph(Workspace workspace, String filePath) {
         Container container;
         ImportController importController = Lookup.getDefault().lookup(ImportController.class);
@@ -139,6 +149,11 @@ public abstract class Strategy implements Algorithm {
         importController.process(container, new DefaultProcessor(), workspace);
     }
 
+    /**
+     * Export the metrics of the graph to a specified directory as .csv format
+     *
+     * @param initialMetrics: true if exporting initial metric of the graph before it got updated
+     */
     private void exportGraphMetrics(boolean initialMetrics) {
         int first = graphFilePath.lastIndexOf('/');
         int last = graphFilePath.indexOf('.');
@@ -162,6 +177,11 @@ public abstract class Strategy implements Algorithm {
         }
     }
 
+    /**
+     * Export the centralities of the newcomer to a specified directory as .csv format
+     *
+     * @param newcomer: the newcomer node that we will be exporting the centralities from
+     */
     public void exportCentralities(Node newcomer) {
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
         Column closeness = graphModel.getNodeTable().getColumn(GraphDistance.CLOSENESS);
