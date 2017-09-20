@@ -52,7 +52,7 @@ public class BrokerConnect extends Global {
         }
     }
 
-    public Node getNextNode() {
+    private Node getNextNode() {
         // Find node with max centrality within list of uncovered node
         Node selectedNode = graphModel.factory().newNode();
 
@@ -68,6 +68,12 @@ public class BrokerConnect extends Global {
         return selectedNode;
     }
 
+    /**
+     * Centrality score is the sum of the normalized betweenness, closeness and eigenvector centrality
+     *
+     * @param node: the node where the centrality score will be calculated from
+     * @return : the centrality score
+     */
     private Double getCentralityScore(Node node) {
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
         Column closeness = graphModel.getNodeTable().getColumn(GraphDistance.CLOSENESS);
