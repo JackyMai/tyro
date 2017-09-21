@@ -120,10 +120,6 @@ public class Community extends Strategy {
      */
     private void getTargetNodes() {
         if (updateEveryRound) updateCentralities();
-        // if (!export) {
-        //     distance.setNormalized(true);
-        //     distance.execute(graph);
-        // }
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
         // Find the node with the highest centrality of each partition.

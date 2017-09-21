@@ -71,15 +71,15 @@ public class CentralityPresenter {
             nodes.put(node,node.getColor());
         }
 
-        EigenvectorCentrality eigenvectorCentrality = new EigenvectorCentrality();
-        eigenvectorCentrality.setDirected(false);
-        eigenvectorCentrality.execute(graph);
-
         //paint each node depending on its centrality
         GraphDistance distance = new GraphDistance();
         distance.setDirected(false);
         distance.setNormalized(true);
         distance.execute(graph);
+
+        EigenvectorCentrality eigenvectorCentrality = new EigenvectorCentrality();
+        eigenvectorCentrality.setDirected(false);
+        eigenvectorCentrality.execute(graph);
 
         betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
         closeness = graphModel.getNodeTable().getColumn(GraphDistance.CLOSENESS);
@@ -115,7 +115,7 @@ public class CentralityPresenter {
     }
 
     private void resetExtrema(){
-        // DONT RESET originalMaxEccentricity
+        // DONT RESET originalMaxEccentricity or originalMaxDegree
         maxBetweenness = 0.0;
         maxCloseness = 0.0;
         maxEccentricity = 0.0;
