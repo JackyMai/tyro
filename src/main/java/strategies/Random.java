@@ -5,6 +5,9 @@ import org.gephi.graph.api.Node;
 
 import java.awt.*;
 
+/**
+ * This algorithm uses selects nodes at random then creates an edge between the newcomer and the randomly selected node.
+ */
 public class Random extends Strategy {
     private java.util.Random rand = new java.util.Random();
 
@@ -41,7 +44,7 @@ public class Random extends Strategy {
             if (export) exportCentralities(newcomer);
             if (visualise) {
                 selectedNode.setSize(40);
-                selectedNode.setColor(Color.BLACK);
+                selectedNode.setColor(visualizer.getColor(currentIteration -1));
 
                 visualizer.updateView();
             }
