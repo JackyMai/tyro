@@ -68,6 +68,15 @@ public class Global extends Strategy {
         return nextNode;
     }
 
+    /**
+     * Finds a set of nodes with at most distance n from the root node
+     * Uses the Iteratively Deepening Depth-First Search (IDDFS) algorithm
+     * to traverse the neighbourhood
+     *
+     * @param root: the root node to search for the neighbourhood from
+     * @param depth: how deep to search neighbours for
+     * @return
+     */
     HashSet<Node> getNeighborhood(Node root, int depth) {
         HashSet<Node> neighbourhood = new HashSet<>();
         LinkedList<Node> queue = new LinkedList<>();
