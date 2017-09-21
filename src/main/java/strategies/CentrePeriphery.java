@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+/**
+ * This algorithm uses connects the newcomer to the node with the highest betweenness centrality. Afterwards,
+ * it repeatedly connects the newcomer to the node which is most distant.
+ */
 public class CentrePeriphery extends Strategy {
     private Collection<Node> uncovered;
     private Node newcomer;
@@ -44,10 +48,6 @@ public class CentrePeriphery extends Strategy {
      */
     private void connectToCentre() {
         if (updateEveryRound) updateCentralities();
-        // if (!export) {
-        //     distance.setNormalized(true);
-        //     distance.execute(graph);
-        // }
         Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
         //find the node with the highest centrality.
@@ -119,10 +119,7 @@ public class CentrePeriphery extends Strategy {
             selectedNode = (Node) object[0];
         } else {
             if (updateEveryRound) updateCentralities();
-            // if (!export) {
-            //     distance.setNormalized(true);
-            //     distance.execute(graph);
-            // }
+
             Column betweenness = graphModel.getNodeTable().getColumn(GraphDistance.BETWEENNESS);
 
             //find the node with the highest centrality.
