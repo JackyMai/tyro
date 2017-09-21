@@ -48,7 +48,6 @@ public class Main {
 
     public static void main(String args[]) {
         runCompleteTest();
-        // executeStrategy();
     }
 
     private static void executeStrategy(String graphFilePath, String strategy, String testFilePath) {
