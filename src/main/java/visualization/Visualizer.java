@@ -176,25 +176,6 @@ public class Visualizer {
     }
 
     /**
-     * This method returns the color that a node should be painted
-     * @param numerator this int is 0 for the first node, 1 for the second node, etc...
-     * @return
-     */
-    public Color getColor(int numerator) {
-        return new Color(Color.HSBtoRGB((float)numerator/iterations, (float)1.0, (float)0.6));
-    }
-
-    /**
-     * This method returns the color that a node should be painted
-     * @param numerator  this param is often a centrality measure
-     * @param denominator this param is often the maximum value that a centrality measure can be
-     * @return
-     */
-    public Color getColor(float numerator, float denominator) {
-        return new Color(Color.HSBtoRGB(numerator/denominator, (float)1.0, (float)0.6));
-    }
-
-    /**
      * This method prints out the graph without having it's layout altered.
      * @param centralityType specifies the location where the snapshot will go
      * @param range specifies the location where the snapshot will go
@@ -221,6 +202,10 @@ public class Visualizer {
         }
     }
 
+    /**
+     * This method is applied before the graph is shown, it is used on large graphs that require more time in order
+     * for the autoLayout process to occur.
+     */
     private void layoutWarmUp(){
         AutoLayout autoLayout = new AutoLayout(3, TimeUnit.MINUTES);
         autoLayout.setGraphModel(graphModel);
@@ -231,5 +216,24 @@ public class Visualizer {
         autoLayout.addLayout(firstLayout, 0.5f);
         autoLayout.addLayout(secondLayout, 0.5f, new AutoLayout.DynamicProperty[]{adjustBySizeProperty, repulsionProperty});
         autoLayout.execute();
+    }
+
+    /**
+     * This method returns the color that a node should be painted
+     * @param numerator this int is 0 for the first node, 1 for the second node, etc...
+     * @return
+     */
+    public Color getColor(int numerator) {
+        return new Color(Color.HSBtoRGB((float)numerator/iterations, (float)1.0, (float)0.6));
+    }
+
+    /**
+     * This method returns the color that a node should be painted
+     * @param numerator  this param is often a centrality measure
+     * @param denominator this param is often the maximum value that a centrality measure can be
+     * @return
+     */
+    public Color getColor(float numerator, float denominator) {
+        return new Color(Color.HSBtoRGB(numerator/denominator, (float)1.0, (float)0.6));
     }
 }
