@@ -6,15 +6,4 @@ results/*
 out/*
 !out/.gitkeep
 
-preview/Output_*
-
-preview/betweenness/absolute/Output_*
-preview/betweenness/relative/Output_*
-
-preview/closeness/absolute/Output_*
-preview/closeness/relative/Output_*
-
-preview/eccentricity/absolute/Output_*
-preview/eccentricity/relative/Output_*
-
-preview/ffmpeg*
+preview/*

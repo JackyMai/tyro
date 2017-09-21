@@ -25,6 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This class is responsible for exporting png files, and showing JFrames required to visualise the graphs.
+ */
 public class Visualizer {
     private GraphModel graphModel;
     private Graph graph;
@@ -32,22 +35,29 @@ public class Visualizer {
     private PreviewSketch previewSketch;
     private int iterations;
     private int outputCount = 0;
+    private String filePath;
+    private String strategyName;
 
     private final boolean SHOW_GRAPH = false;  // ShowGraph produces a JFrame (doesn't work with a high frame rate)
-    private final boolean EXPORT_GRAPH = false;
-    private final boolean HIGH_FRAME_RATE = false;
+    private final boolean EXPORT_GRAPH = true;
+    private final boolean HIGH_FRAME_RATE = false; // only true if you want to produce pictures for a video
     private final int FRAME_RATE = 60;
 
-    private boolean presentCentrality = false; // enables Centrality Presenter
+    private  boolean warmupLayout = false;
+
+    private boolean presentCentrality = true; // enables Centrality Presenter
     private CentralityPresenter centralityPresenter;
 
     private final int SCREENSHOT_WIDTH = 1920;
     private final int SCREENSHOT_HEIGHT = 1080;
 
-    public Visualizer(Graph graph, int iterations) {
+    public Visualizer(Graph graph, int iterations, String graphFilePath, String testFilePath) {
         this.graph = graph;
         this.graphModel = graph.getModel();
         this.iterations = iterations;
+        String temp = graphFilePath.split("/", 3)[2];
+        this.filePath = temp.substring(graphFilePath.indexOf("/"), temp.indexOf("."));
+        this.strategyName = testFilePath.split("/", 4)[2];
     }
 
     public void setUpView() {
@@ -69,6 +79,10 @@ public class Visualizer {
             // New Processing target inserted into PreviewSketch (a JPanel)
             G2DTarget target = (G2DTarget) previewController.getRenderTarget(RenderTarget.G2D_TARGET);
             previewSketch = new PreviewSketch(target);
+        }
+
+        if (warmupLayout){
+            layoutWarmUp();
         }
 
         updateView();
@@ -99,6 +113,10 @@ public class Visualizer {
         }
     }
 
+    /**
+     * this method calls for the JFrame to be refreshed and/or the graph to be reprinted
+     * (pending on the boolean fields of this class).
+     */
     public void updateView(){
         if (HIGH_FRAME_RATE) {
             // Layout based on configured frame rate
@@ -119,6 +137,10 @@ public class Visualizer {
         System.out.println("Preview has updated");
     }
 
+    /**
+     * this method refreshes the JFrame and/or reprints the graph
+     * (pending on the boolean fields of this class).
+     */
     private void privateUpdateView(AutoLayout autoLayout){
         autoLayout.setGraphModel(graphModel);
         YifanHuLayout firstLayout = new YifanHuLayout(null, new StepDisplacement(1f));
@@ -135,6 +157,8 @@ public class Visualizer {
         }
 
         if (EXPORT_GRAPH) {
+
+            new File("./preview/" + strategyName + "/" + filePath).mkdirs();
             // Simple PNG export, can export .png, .pdf, .svg, etc...
             ExportController ec = Lookup.getDefault().lookup(ExportController.class);
             PNGExporter pngExporter = (PNGExporter) ec.getExporter("png");
@@ -142,7 +166,7 @@ public class Visualizer {
             pngExporter.setHeight(SCREENSHOT_HEIGHT);
 
             try {
-                ec.exportFile(new File("preview/Output_" + outputCount + ".png"), pngExporter);
+                ec.exportFile(new File("preview/" + strategyName + "/" + filePath + "/Output_" + outputCount + ".png"), pngExporter);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 return;
@@ -151,26 +175,61 @@ public class Visualizer {
         }
     }
 
+    /**
+     * This method returns the color that a node should be painted
+     * @param numerator this int is 0 for the first node, 1 for the second node, etc...
+     * @return
+     */
     public Color getColor(int numerator) {
         return new Color(Color.HSBtoRGB((float)numerator/iterations, (float)1.0, (float)0.6));
     }
 
+    /**
+     * This method returns the color that a node should be painted
+     * @param numerator  this param is often a centrality measure
+     * @param denominator this param is often the maximum value that a centrality measure can be
+     * @return
+     */
     public Color getColor(float numerator, float denominator) {
         return new Color(Color.HSBtoRGB(numerator/denominator, (float)1.0, (float)0.6));
     }
 
+    /**
+     * This method prints out the graph without having it's layout altered.
+     * @param centralityType specifies the location where the snapshot will go
+     * @param range specifies the location where the snapshot will go
+     */
     public void snapShot(String centralityType, String range) {
         if (EXPORT_GRAPH) {
-            //Simple PNG export, can export .png, .pdf, .svg, etc...
+
+            new File("./preview/" + strategyName + "/" + filePath + "/" + centralityType + "/" + range).mkdirs();
+
+            // Simple PNG export, can export .png, .pdf, .svg, etc...
             ExportController ec = Lookup.getDefault().lookup(ExportController.class);
+            PNGExporter pngExporter = (PNGExporter) ec.getExporter("png");
+            pngExporter.setWidth(SCREENSHOT_WIDTH);
+            pngExporter.setHeight(SCREENSHOT_HEIGHT);
+
             try {
-                ec.exportFile(new File("preview/" + centralityType + "/" + range + "/Output_" + outputCount +
-                        "_" + centralityType + range + ".png"));
+                ec.exportFile(new File("preview/" + strategyName + "/" +filePath +"/"+ centralityType + "/" + range + "/Output_" + outputCount +
+                        "_" + centralityType + range + ".png"), pngExporter);
             } catch (IOException ex) {
                 ex.printStackTrace();
                 return;
             }
             outputCount++;
         }
+    }
+
+    private void layoutWarmUp(){
+        AutoLayout autoLayout = new AutoLayout(3, TimeUnit.MINUTES);
+        autoLayout.setGraphModel(graphModel);
+        YifanHuLayout firstLayout = new YifanHuLayout(null, new StepDisplacement(1f));
+        ForceAtlasLayout secondLayout = new ForceAtlasLayout(null);
+        AutoLayout.DynamicProperty adjustBySizeProperty = AutoLayout.createDynamicProperty("forceAtlas.adjustSizes.name", Boolean.TRUE, 0.1f); // True after 10% of layout time
+        AutoLayout.DynamicProperty repulsionProperty = AutoLayout.createDynamicProperty("forceAtlas.repulsionStrength.name", 500., 0f); // 500 for the complete period
+        autoLayout.addLayout(firstLayout, 0.5f);
+        autoLayout.addLayout(secondLayout, 0.5f, new AutoLayout.DynamicProperty[]{adjustBySizeProperty, repulsionProperty});
+        autoLayout.execute();
     }
 }
