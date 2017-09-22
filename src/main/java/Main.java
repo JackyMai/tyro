@@ -6,6 +6,7 @@ import strategies.Community;
 import strategies.Global;
 import strategies.Local;
 import strategies.Random;
+import strategies.Strategy;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -53,42 +54,42 @@ public class Main {
     private static void executeStrategy(String graphFilePath, String strategy, String testFilePath) {
         switch (strategy) {
             case CENTRE_PERIPHERY:
-                CentrePeriphery centrePeriphery = new CentrePeriphery(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy centrePeriphery = new CentrePeriphery(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
                 centrePeriphery.start();
                 break;
             case BROKER_CONNECT:
-                BrokerConnect brokerConnect = new BrokerConnect(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy brokerConnect = new BrokerConnect(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
                 brokerConnect.start();
                 break;
             case BROKER_EXPRESS:
-                BrokerExpress brokerExpress = new BrokerExpress(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy brokerExpress = new BrokerExpress(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
                 brokerExpress.start();
                 break;
             case BROKER_HYBRID:
-                BrokerHybrid brokerHybrid = new BrokerHybrid(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy brokerHybrid = new BrokerHybrid(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
                 brokerHybrid.start();
                 break;
             case COMMUNITY:
-                Community community = new Community(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy community = new Community(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
                 community.start();
                 break;
             case RANDOM:
-                Random random = new Random(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy random = new Random(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
                 random.start();
                 break;
             case GLOBAL:
-                Global global = new Global(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy global = new Global(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
                 global.start();
                 break;
             case LOCAL:
-                Local local = new Local(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy local = new Local(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
                 local.start();
                 break;
         }
     }
 
     private static void runCompleteTest() {
-        data = createCsvTitle();
+        data = getCsvTitle();
 
         new File("./results").mkdirs();
         for(String strategy : strategies) {
@@ -96,7 +97,7 @@ public class Main {
             for (String graphType : ARTIFICIAL_GRAPH_TYPES) {
                 new File("./results/" + strategy + "/" + graphType).mkdirs();
 
-                String graphName ="";
+                String graphName = "";
                 if (graphType.equals(BA_GRAPH)) graphName = "ba";
                 if (graphType.equals(WS_GRAPH)) graphName = "ws";
 
@@ -127,7 +128,7 @@ public class Main {
         }
     }
 
-    private static byte[] createCsvTitle() {
+    private static byte[] getCsvTitle() {
         StringBuilder csvTitle = new StringBuilder("Metrics for Graph before algorithm,,,");
         for (int i = 1; i<= edgeLimit; i++) {
             csvTitle.append(",Iteration ").append(i).append(",,,");
