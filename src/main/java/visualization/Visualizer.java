@@ -35,28 +35,27 @@ public class Visualizer {
     private PreviewSketch previewSketch;
     private int iterations;
     private int outputCount = 0;
-    private String filePath;
+    private String graphFileName;
     private String strategyName;
 
     private final boolean SHOW_GRAPH = false;  // Produces a JFrame (doesn't work with a high frame rate)
-    private final boolean EXPORT_GRAPH = true;
+    private final boolean EXPORT_GRAPH = true;  // Export screenshots of graph
     private final boolean WARMUP_LAYOUT = false;
-    private final boolean HIGH_FRAME_RATE = false; // Only true if you want to produce pictures for a video
+    private final boolean HIGH_FRAME_RATE = true; // Only true if you want to produce pictures for a video
     private final int FRAME_RATE = 60;
 
-    private final boolean PRESENT_CENTRALITY = true; // Enables Centrality Presenter
+    private final boolean PRESENT_CENTRALITY = false; // Enables Centrality Presenter
     private CentralityPresenter centralityPresenter;
 
     private final int SCREENSHOT_WIDTH = 1920;
     private final int SCREENSHOT_HEIGHT = 1080;
 
-    public Visualizer(Graph graph, int iterations, String graphFilePath, String testFilePath) {
+    public Visualizer(Graph graph, int iterations, String graphFilePath, String outputFilePath) {
         this.graph = graph;
         this.graphModel = graph.getModel();
         this.iterations = iterations;
-        String temp = graphFilePath.split("/", 3)[2];
-        this.filePath = temp.substring(graphFilePath.indexOf("/"), temp.indexOf("."));
-        this.strategyName = testFilePath.split("/", 4)[2];
+        this.graphFileName = graphFilePath.substring(graphFilePath.lastIndexOf("/"), graphFilePath.indexOf("."));
+        this.strategyName = outputFilePath.split("/")[2];
     }
 
     public void setUpView() {
@@ -158,7 +157,7 @@ public class Visualizer {
         }
 
         if (EXPORT_GRAPH) {
-            snapshot("preview/" + strategyName + "/" + filePath + "/Output_" + outputCount + ".png");
+            snapshot("preview/" + strategyName + "/" + graphFileName + "/Output_" + outputCount + ".png");
         }
     }
 
@@ -191,8 +190,8 @@ public class Visualizer {
      * @param range specifies the location where the snapshot will go
      */
     void snapshot(String centralityType, String range) {
-        this.snapshot("preview/" + strategyName + "/" + filePath + "/" + centralityType + "/" + range + "/Output_" + outputCount +
-                "_" + centralityType + range + ".png");
+        this.snapshot("preview/" + strategyName + "/" + graphFileName + "/" + centralityType + "/" + range +
+                "/Output_" + outputCount + "_" + centralityType + range + ".png");
     }
 
     /**
