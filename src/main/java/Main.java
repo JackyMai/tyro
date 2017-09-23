@@ -42,21 +42,16 @@ public class Main {
 
     private static int edgeLimit = 10;
     private static boolean updateEveryRound = true;
-    private static boolean export = true;
     private static boolean visualise = false;
-
-    private static byte[] data;
+    private static boolean export = true;
 
     public static void main(String args[]) {
         runCompleteTest();
+        // runSingleTest(BROKER_CONNECT, "/graph/barabasi-albert/ba_250_01.graphml", "./results/output.csv");   // Example
     }
 
     private static void executeStrategy(String graphFilePath, String strategy, String testFilePath) {
         switch (strategy) {
-            case CENTRE_PERIPHERY:
-                Strategy centrePeriphery = new CentrePeriphery(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
-                centrePeriphery.start();
-                break;
             case BROKER_CONNECT:
                 Strategy brokerConnect = new BrokerConnect(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
                 brokerConnect.start();
@@ -68,6 +63,10 @@ public class Main {
             case BROKER_HYBRID:
                 Strategy brokerHybrid = new BrokerHybrid(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
                 brokerHybrid.start();
+                break;
+            case CENTRE_PERIPHERY:
+                Strategy centrePeriphery = new CentrePeriphery(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                centrePeriphery.start();
                 break;
             case COMMUNITY:
                 Strategy community = new Community(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
@@ -88,67 +87,66 @@ public class Main {
         }
     }
 
+    private static void runSingleTest(String strategy, String graphFilePath, String outputFilePath) {
+        File outputDir = new File(outputFilePath);
+        outputDir.getParentFile().mkdirs();     // Create parent directories if not already exist
+        createCsvFile(getCsvTitle(), outputFilePath);
+        executeStrategy(graphFilePath, strategy, outputFilePath);
+    }
+
     private static void runCompleteTest() {
-        data = getCsvTitle();
-
-        new File("./results").mkdirs();
         for(String strategy : strategies) {
-            new File("./results/" + strategy).mkdirs();
             for (String graphType : ARTIFICIAL_GRAPH_TYPES) {
-                new File("./results/" + strategy + "/" + graphType).mkdirs();
-
                 String graphName = "";
-                if (graphType.equals(BA_GRAPH)) graphName = "ba";
-                if (graphType.equals(WS_GRAPH)) graphName = "ws";
+
+                if (graphType.equals(BA_GRAPH)) {
+                    graphName = "ba";
+                } else if (graphType.equals(WS_GRAPH)) {
+                    graphName = "ws";
+                }
 
                 for (String size : GRAPH_SIZES) {
-                    String testFilePath = "./results/" + strategy + "/" + graphType + "/" + size +".csv";
-                    createCsvFile(testFilePath);
+                    String outputFilePath = "./results/" + strategy + "/" + graphType + "/" + size +".csv";
 
-                    for (int trial = 1; trial <=20; trial++) {
-                        String trialString = Integer.toString(trial);
-                        if (trial <10) trialString = "0" + trialString;
-
-                        String graphFilePath = "/graph/" + graphType + "/" + graphName + "_" + size + "_" +
-                                trialString + ".graphml";
-                        executeStrategy(graphFilePath, strategy, testFilePath);
+                    for (int variationID = 1; variationID <= 20; variationID++) {
+                        String graphFilePath = "/graph/" + graphType + "/" + graphName + "_" + size + "_" + String.format("%02d", variationID) + ".graphml";
+                        runSingleTest(strategy, graphFilePath, outputFilePath);
                     }
                 }
             }
 
-            new File("./results/" + strategy + "/real-world").mkdirs();
             for (String graphType : REAL_WORLD_GRAPHS) {
-                String testFilePath = "./results/" + strategy + "/real-world/" + graphType +".csv";
-                createCsvFile(testFilePath);
-
                 String graphFilePath = "/graph/real-world/" + graphType + ".txt";
-
-                executeStrategy(graphFilePath, strategy, testFilePath);
+                String outputFilePath = "./results/" + strategy + "/real-world/" + graphType +".csv";
+                runSingleTest(strategy, graphFilePath, outputFilePath);
             }
         }
     }
 
     private static byte[] getCsvTitle() {
         StringBuilder csvTitle = new StringBuilder("Metrics for Graph before algorithm,,,");
+
         for (int i = 1; i<= edgeLimit; i++) {
             csvTitle.append(",Iteration ").append(i).append(",,,");
         }
-        csvTitle.append(",Metrics for Graph after algorithm\n" + "trial");
 
+        csvTitle.append(",Metrics for Graph after algorithm\n" + "trial");
         csvTitle.append(",Avg shortest path,Diameter,Radius");
+
         for (int i = 0; i< edgeLimit; i++) {
             csvTitle.append(",Betweenness,Closeness,Eccentricity,Eigenvector");
         }
+
         csvTitle.append(",Avg shortest path,Diameter,Radius\n");
 
         return csvTitle.toString().getBytes();
     }
 
-    private static void createCsvFile(String pathString) {
+    private static void createCsvFile(byte[] csvData, String pathString) {
         Path path = Paths.get(pathString);
 
         try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(path, CREATE))) {
-            out.write(data, 0, data.length);
+            out.write(csvData, 0, csvData.length);
         } catch (IOException e) {
             e.getStackTrace();
         }
