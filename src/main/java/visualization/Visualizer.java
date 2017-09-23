@@ -29,8 +29,8 @@ import java.util.concurrent.TimeUnit;
  * This class is responsible for exporting png files, and showing JFrames required to visualise the graphs.
  */
 public class Visualizer {
-    private GraphModel graphModel;
     private Graph graph;
+    private GraphModel graphModel;
     private PreviewController previewController;
     private PreviewSketch previewSketch;
     private int iterations;
@@ -38,14 +38,13 @@ public class Visualizer {
     private String filePath;
     private String strategyName;
 
-    private final boolean SHOW_GRAPH = false;  // ShowGraph produces a JFrame (doesn't work with a high frame rate)
+    private final boolean SHOW_GRAPH = false;  // Produces a JFrame (doesn't work with a high frame rate)
     private final boolean EXPORT_GRAPH = true;
-    private final boolean HIGH_FRAME_RATE = false; // only true if you want to produce pictures for a video
+    private final boolean WARMUP_LAYOUT = false;
+    private final boolean HIGH_FRAME_RATE = false; // Only true if you want to produce pictures for a video
     private final int FRAME_RATE = 60;
 
-    private  boolean warmupLayout = false;
-
-    private boolean presentCentrality = true; // enables Centrality Presenter
+    private final boolean PRESENT_CENTRALITY = true; // Enables Centrality Presenter
     private CentralityPresenter centralityPresenter;
 
     private final int SCREENSHOT_WIDTH = 1920;
@@ -61,7 +60,7 @@ public class Visualizer {
     }
 
     public void setUpView() {
-        if (presentCentrality) {
+        if (PRESENT_CENTRALITY) {
             centralityPresenter = new CentralityPresenter(graph, this);
         }
 
@@ -81,56 +80,58 @@ public class Visualizer {
             previewSketch = new PreviewSketch(target);
         }
 
-        if (warmupLayout){
+        if (WARMUP_LAYOUT) {
             layoutWarmUp();
         }
 
         updateView();
 
         if (SHOW_GRAPH) {
-            // Add the PreviewSketch to a JFrame and display
-            JFrame frame = new JFrame("Tyro");
-            frame.setLayout(new BorderLayout());
-
-            frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            frame.add(previewSketch, BorderLayout.CENTER);
-
-            frame.setSize(1024, 768);
-
-            // Wait for the frame to be visible before painting, or the result drawing will be strange
-            frame.addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentShown(ComponentEvent e) {
-                    previewSketch.resetZoom();
-                }
-
-                @Override
-                public void componentResized(ComponentEvent e) {
-                    previewSketch.resetZoom();
-                }
-            });
-            frame.setVisible(true);
+            displayJFrame();
         }
     }
 
+    private void displayJFrame() {
+        // Add the PreviewSketch to a JFrame and display
+        JFrame frame = new JFrame("Tyro");
+        frame.setSize(1024, 768);
+        frame.setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.add(previewSketch, BorderLayout.CENTER);
+
+        // Wait for the frame to be visible before painting, or the result drawing will be strange
+        frame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                previewSketch.resetZoom();
+            }
+
+            @Override
+            public void componentResized(ComponentEvent e) {
+                previewSketch.resetZoom();
+            }
+        });
+        frame.setVisible(true);
+    }
+
     /**
-     * this method calls for the JFrame to be refreshed and/or the graph to be reprinted
+     * This method calls for the JFrame to be refreshed and/or the graph to be reprinted
      * (pending on the boolean fields of this class).
      */
-    public void updateView(){
+    public void updateView() {
         if (HIGH_FRAME_RATE) {
             // Layout based on configured frame rate
             for (int i = 0; i < FRAME_RATE; i++) {
                 AutoLayout autoLayout = new AutoLayout(1, TimeUnit.SECONDS);
-                privateUpdateView(autoLayout);
+                updateView(autoLayout);
             }
         } else {
             // Layout for 1 minute
             AutoLayout autoLayout = new AutoLayout(1, TimeUnit.MINUTES);
-            privateUpdateView(autoLayout);
+            updateView(autoLayout);
         }
 
-        if (presentCentrality) {
+        if (PRESENT_CENTRALITY) {
             centralityPresenter.present();
         }
 
@@ -138,10 +139,10 @@ public class Visualizer {
     }
 
     /**
-     * this method refreshes the JFrame and/or reprints the graph
+     * This method refreshes the JFrame and/or reprints the graph
      * (pending on the boolean fields of this class).
      */
-    private void privateUpdateView(AutoLayout autoLayout){
+    private void updateView(AutoLayout autoLayout) {
         autoLayout.setGraphModel(graphModel);
         YifanHuLayout firstLayout = new YifanHuLayout(null, new StepDisplacement(1f));
         ForceAtlasLayout secondLayout = new ForceAtlasLayout(null);
@@ -157,7 +158,6 @@ public class Visualizer {
         }
 
         if (EXPORT_GRAPH) {
-
             new File("./preview/" + strategyName + "/" + filePath).mkdirs();
             // Simple PNG export, can export .png, .pdf, .svg, etc...
             ExportController ec = Lookup.getDefault().lookup(ExportController.class);
@@ -180,9 +180,8 @@ public class Visualizer {
      * @param centralityType specifies the location where the snapshot will go
      * @param range specifies the location where the snapshot will go
      */
-    public void snapShot(String centralityType, String range) {
+    void snapShot(String centralityType, String range) {
         if (EXPORT_GRAPH) {
-
             new File("./preview/" + strategyName + "/" + filePath + "/" + centralityType + "/" + range).mkdirs();
 
             // Simple PNG export, can export .png, .pdf, .svg, etc...
@@ -206,7 +205,7 @@ public class Visualizer {
      * This method is applied before the graph is shown, it is used on large graphs that require more time in order
      * for the autoLayout process to occur.
      */
-    private void layoutWarmUp(){
+    private void layoutWarmUp() {
         AutoLayout autoLayout = new AutoLayout(3, TimeUnit.MINUTES);
         autoLayout.setGraphModel(graphModel);
         YifanHuLayout firstLayout = new YifanHuLayout(null, new StepDisplacement(1f));
@@ -221,7 +220,6 @@ public class Visualizer {
     /**
      * This method returns the color that a node should be painted
      * @param numerator this int is 0 for the first node, 1 for the second node, etc...
-     * @return
      */
     public Color getColor(int numerator) {
         return new Color(Color.HSBtoRGB((float)numerator/iterations, (float)1.0, (float)0.6));
@@ -231,7 +229,6 @@ public class Visualizer {
      * This method returns the color that a node should be painted
      * @param numerator  this param is often a centrality measure
      * @param denominator this param is often the maximum value that a centrality measure can be
-     * @return
      */
     public Color getColor(float numerator, float denominator) {
         return new Color(Color.HSBtoRGB(numerator/denominator, (float)1.0, (float)0.6));
