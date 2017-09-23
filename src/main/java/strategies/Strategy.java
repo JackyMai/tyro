@@ -38,15 +38,15 @@ public abstract class Strategy implements Algorithm {
 
     // Settings
     private final String graphFilePath;
-    private final String testFilePath;
+    private final String outputFilePath;
     final int edgeLimit;
     final boolean updateEveryRound;
     final boolean visualise;
     final boolean export;
 
-    public Strategy(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
+    public Strategy(String graphFilePath, String outputFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export) {
         this.graphFilePath = graphFilePath;
-        this.testFilePath = testFilePath;
+        this.outputFilePath = outputFilePath;
         this.edgeLimit = edgeLimit;
         this.updateEveryRound = updateEveryRound;
         this.visualise = visualise;
@@ -69,7 +69,7 @@ public abstract class Strategy implements Algorithm {
         // Set up visualization if enabled
         if (visualise) {
             System.out.println("Start setting up view");
-            visualizer = new Visualizer(graph, edgeLimit, graphFilePath, testFilePath);
+            visualizer = new Visualizer(graph, edgeLimit, graphFilePath, outputFilePath);
             visualizer.setUpView();
         }
 
@@ -165,7 +165,7 @@ public abstract class Strategy implements Algorithm {
 
         byte[] csvData = csvString.getBytes();
 
-        Path path = Paths.get(testFilePath);
+        Path path = Paths.get(outputFilePath);
 
         try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(path, APPEND))) {
             out.write(csvData, 0, csvData.length);
@@ -189,7 +189,7 @@ public abstract class Strategy implements Algorithm {
 
         byte[] csvData = csvString.getBytes();
 
-        Path path = Paths.get(testFilePath);
+        Path path = Paths.get(outputFilePath);
 
         try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(path, APPEND))) {
             out.write(csvData, 0, csvData.length);

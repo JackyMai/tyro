@@ -40,8 +40,8 @@ public class Community extends Strategy {
 
     private Pair<Node, Double>[] record;
 
-    public Community(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
-        super(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+    public Community(String graphFilePath, String outputFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export) {
+        super(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
     }
 
     @Override

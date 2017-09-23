@@ -13,8 +13,8 @@ public class Local extends Strategy {
     private HashSet<Node> covered;
     private ArrayList<Node> targets;
 
-    public Local(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
-        super(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+    public Local(String graphFilePath, String outputFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export) {
+        super(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
     }
 
     @Override

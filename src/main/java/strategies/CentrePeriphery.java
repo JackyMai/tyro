@@ -20,8 +20,8 @@ public class CentrePeriphery extends Strategy {
 
     private Double overallMaxDistance = null;
 
-    public CentrePeriphery(String filePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
-        super(filePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+    public CentrePeriphery(String graphFilePath, String outputFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export) {
+        super(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
     }
 
     @Override

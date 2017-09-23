@@ -41,47 +41,47 @@ public class Main {
     private static final String[] REAL_WORLD_GRAPHS = {FACEBOOK_1400, FACEBOOK_2600, FACEBOOK_2900, FACEBOOK_4000};
 
     private static int edgeLimit = 10;
-    private static boolean updateEveryRound = true;
+    private static boolean updateEveryRound = true; // Update centrality metrics every iteration when algorithm runs
     private static boolean visualise = false;
-    private static boolean export = true;
+    private static boolean export = true;   // Export metrics to a file
 
     public static void main(String args[]) {
         runCompleteTest();
         // runSingleTest(BROKER_CONNECT, "/graph/barabasi-albert/ba_250_01.graphml", "./results/output.csv");   // Example
     }
 
-    private static void executeStrategy(String graphFilePath, String strategy, String testFilePath) {
+    private static void executeStrategy(String strategy, String graphFilePath, String outputFilePath) {
         switch (strategy) {
             case BROKER_CONNECT:
-                Strategy brokerConnect = new BrokerConnect(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy brokerConnect = new BrokerConnect(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
                 brokerConnect.start();
                 break;
             case BROKER_EXPRESS:
-                Strategy brokerExpress = new BrokerExpress(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy brokerExpress = new BrokerExpress(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
                 brokerExpress.start();
                 break;
             case BROKER_HYBRID:
-                Strategy brokerHybrid = new BrokerHybrid(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy brokerHybrid = new BrokerHybrid(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
                 brokerHybrid.start();
                 break;
             case CENTRE_PERIPHERY:
-                Strategy centrePeriphery = new CentrePeriphery(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy centrePeriphery = new CentrePeriphery(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
                 centrePeriphery.start();
                 break;
             case COMMUNITY:
-                Strategy community = new Community(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy community = new Community(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
                 community.start();
                 break;
             case RANDOM:
-                Strategy random = new Random(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy random = new Random(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
                 random.start();
                 break;
             case GLOBAL:
-                Strategy global = new Global(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy global = new Global(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
                 global.start();
                 break;
             case LOCAL:
-                Strategy local = new Local(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+                Strategy local = new Local(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
                 local.start();
                 break;
         }
@@ -91,7 +91,7 @@ public class Main {
         File outputDir = new File(outputFilePath);
         outputDir.getParentFile().mkdirs();     // Create parent directories if not already exist
         createCsvFile(getCsvTitle(), outputFilePath);
-        executeStrategy(graphFilePath, strategy, outputFilePath);
+        executeStrategy(strategy, graphFilePath, outputFilePath);
     }
 
     private static void runCompleteTest() {
@@ -106,7 +106,7 @@ public class Main {
                 }
 
                 for (String size : GRAPH_SIZES) {
-                    String outputFilePath = "./results/" + strategy + "/" + graphType + "/" + size +".csv";
+                    String outputFilePath = "./results/" + strategy + "/" + graphType + "/" + size + ".csv";
 
                     for (int variationID = 1; variationID <= 20; variationID++) {
                         String graphFilePath = "/graph/" + graphType + "/" + graphName + "_" + size + "_" + String.format("%02d", variationID) + ".graphml";
@@ -117,7 +117,7 @@ public class Main {
 
             for (String graphType : REAL_WORLD_GRAPHS) {
                 String graphFilePath = "/graph/real-world/" + graphType + ".txt";
-                String outputFilePath = "./results/" + strategy + "/real-world/" + graphType +".csv";
+                String outputFilePath = "./results/" + strategy + "/real-world/" + graphType + ".csv";
                 runSingleTest(strategy, graphFilePath, outputFilePath);
             }
         }

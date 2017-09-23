@@ -12,8 +12,8 @@ import java.util.Collection;
 public class BrokerConnect extends Global {
     private Collection<Node> uncovered;
 
-    public BrokerConnect(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
-        super(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+    public BrokerConnect(String graphFilePath, String outputFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export) {
+        super(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
     }
 
     @Override

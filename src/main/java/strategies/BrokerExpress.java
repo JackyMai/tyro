@@ -10,8 +10,8 @@ import java.util.LinkedList;
 public class BrokerExpress extends Strategy {
     private Collection<Node> uncovered;
 
-    public BrokerExpress(String graphFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export, String testFilePath) {
-        super(graphFilePath, edgeLimit, updateEveryRound, visualise, export, testFilePath);
+    public BrokerExpress(String graphFilePath, String outputFilePath, int edgeLimit, boolean updateEveryRound, boolean visualise, boolean export) {
+        super(graphFilePath, outputFilePath, edgeLimit, updateEveryRound, visualise, export);
     }
 
     @Override
