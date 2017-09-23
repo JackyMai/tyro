@@ -158,47 +158,41 @@ public class Visualizer {
         }
 
         if (EXPORT_GRAPH) {
-            new File("./preview/" + strategyName + "/" + filePath).mkdirs();
-            // Simple PNG export, can export .png, .pdf, .svg, etc...
-            ExportController ec = Lookup.getDefault().lookup(ExportController.class);
-            PNGExporter pngExporter = (PNGExporter) ec.getExporter("png");
-            pngExporter.setWidth(SCREENSHOT_WIDTH);
-            pngExporter.setHeight(SCREENSHOT_HEIGHT);
-
-            try {
-                ec.exportFile(new File("preview/" + strategyName + "/" + filePath + "/Output_" + outputCount + ".png"), pngExporter);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                return;
-            }
-            outputCount++;
+            snapshot("preview/" + strategyName + "/" + filePath + "/Output_" + outputCount + ".png");
         }
     }
 
     /**
-     * This method prints out the graph without having it's layout altered.
+     * Prints a screenshot of the graph in PNG format without having it's layout altered
+     * @param fullPath: the location where the screenshot will be exported to
+     */
+    private void snapshot(String fullPath) {
+        File outputDir = new File(fullPath);
+        outputDir.getParentFile().mkdirs();
+
+        // Simple PNG export, can export .png, .pdf, .svg, etc...
+        ExportController ec = Lookup.getDefault().lookup(ExportController.class);
+        PNGExporter pngExporter = (PNGExporter) ec.getExporter("png");
+        pngExporter.setWidth(SCREENSHOT_WIDTH);
+        pngExporter.setHeight(SCREENSHOT_HEIGHT);
+
+        try {
+            ec.exportFile(outputDir, pngExporter);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return;
+        }
+        outputCount++;
+    }
+
+    /**
+     * Prints a screenshot of the graph in PNG format without having it's layout altered
      * @param centralityType specifies the location where the snapshot will go
      * @param range specifies the location where the snapshot will go
      */
-    void snapShot(String centralityType, String range) {
-        if (EXPORT_GRAPH) {
-            new File("./preview/" + strategyName + "/" + filePath + "/" + centralityType + "/" + range).mkdirs();
-
-            // Simple PNG export, can export .png, .pdf, .svg, etc...
-            ExportController ec = Lookup.getDefault().lookup(ExportController.class);
-            PNGExporter pngExporter = (PNGExporter) ec.getExporter("png");
-            pngExporter.setWidth(SCREENSHOT_WIDTH);
-            pngExporter.setHeight(SCREENSHOT_HEIGHT);
-
-            try {
-                ec.exportFile(new File("preview/" + strategyName + "/" +filePath +"/"+ centralityType + "/" + range + "/Output_" + outputCount +
-                        "_" + centralityType + range + ".png"), pngExporter);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                return;
-            }
-            outputCount++;
-        }
+    void snapshot(String centralityType, String range) {
+        this.snapshot("preview/" + strategyName + "/" + filePath + "/" + centralityType + "/" + range + "/Output_" + outputCount +
+                "_" + centralityType + range + ".png");
     }
 
     /**
