@@ -141,7 +141,7 @@ public class CentralityPresenter {
             }
         }
 
-        visualizer.snapShot(centralityType, range);
+        visualizer.snapshot(centralityType, range);
     }
     
     private void paintAbsoluteRange(String centralityType, Node node) {
