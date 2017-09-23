@@ -145,72 +145,83 @@ public class CentralityPresenter {
     private void centralityPaint(String centralityType, String range) {
         for (Node node : graph.getNodes().toCollection()) {
             if(range.equals(ABSOLUTE)) {
-                if (centralityType.equals(CENTRALITY_SCORE)) {
-                    node.setColor(visualizer.getColor(((Double)(
-                                    (Double) node.getAttribute(betweenness) +
-                                            (Double) node.getAttribute(closeness) +
-                                            (Double) node.getAttribute(eigenvector))).floatValue()
-                            ,(float) 3.3));
-
-                } else if (centralityType.equals(BETWEENNESS)) {
-                    node.setColor(visualizer.getColor(((Double) node.getAttribute(betweenness)).floatValue(),
-                            (float) 1.1));
-
-                } else if (centralityType.equals(CLOSENESS)) {
-                    node.setColor(visualizer.getColor(((Double) node.getAttribute(closeness)).floatValue(),
-                            (float) 1.1));
-
-                } else if (centralityType.equals(EIGENVECTOR)) {
-                    node.setColor(visualizer.getColor(((Double) node.getAttribute(eigenvector)).floatValue(),
-                            (float) 1.1));
-
-                } else if (centralityType.equals(DEGREE)) {
-                    node.setColor(visualizer.getColor((float)(graph.getDegree(node)),
-                            (float)(originalMaxDegree + originalMaxDegree/3)));
-
-                } else if (centralityType.equals(ECCENTRICITY)) {
-                    node.setColor(visualizer.getColor(
-                            ((Double) node.getAttribute(eccentricity)).floatValue(),
-                            (float) originalMaxEccentricity + (float) 1.0));
-                }
+                paintAbsoluteRange(centralityType, node);
             } else if (range.equals(RELATIVE)) {
-                if (centralityType.equals(CENTRALITY_SCORE)) {
-                    float denominator = (float) (rangeBetweenness + rangeCloseness + rangeEigenvector);
-                    node.setColor(visualizer.getColor(
-                            ((Double) (
-                                    (Double) node.getAttribute(betweenness) - minBetweenness +
-                                            (Double) node.getAttribute(closeness) - minCloseness+
-                                            (Double) node.getAttribute(eigenvector) - minEigenvector)).floatValue(),
-                            (float) (denominator + 0.3)));
-
-                } else if (centralityType.equals(BETWEENNESS)) {
-                    node.setColor(visualizer.getColor(
-                            ((Double) node.getAttribute(betweenness)).floatValue() - (float) minBetweenness,
-                            (float) rangeBetweenness + (float)rangeBetweenness/4));
-
-                } else if (centralityType.equals(CLOSENESS)) {
-                    node.setColor(visualizer.getColor(
-                            ((Double) node.getAttribute(closeness)).floatValue() - (float) minCloseness,
-                            (float) rangeCloseness + (float)0.1));
-
-                } else if (centralityType.equals(EIGENVECTOR)) {
-                    node.setColor(visualizer.getColor(
-                            ((Double) node.getAttribute(eigenvector)).floatValue() - (float) minEigenvector,
-                            (float) rangeEigenvector + (float)0.1));
-
-                } else if (centralityType.equals(DEGREE)) {
-                    node.setColor(visualizer.getColor((float)(graph.getDegree(node)),
-                            (float) rangeDegree + (float)1));
-
-                } else if (centralityType.equals(ECCENTRICITY)) {
-                    node.setColor(visualizer.getColor(
-                            ((Double) node.getAttribute(eccentricity)).floatValue() - (float) minEccentricity,
-                            (float) rangeEccentricity + (float)1.0));
-
-                }
+                paintRelativeRange(centralityType, node);
             }
         }
 
         visualizer.snapShot(centralityType, range);
+    }
+    
+    private void paintAbsoluteRange(String centralityType, Node node) {
+        switch (centralityType) {
+            case CENTRALITY_SCORE:
+                node.setColor(visualizer.getColor(((Double) (
+                                (Double) node.getAttribute(betweenness) +
+                                        (Double) node.getAttribute(closeness) +
+                                        (Double) node.getAttribute(eigenvector))).floatValue()
+                        , (float) 3.3));
+                break;
+            case BETWEENNESS:
+                node.setColor(visualizer.getColor(((Double) node.getAttribute(betweenness)).floatValue(),
+                        (float) 1.1));
+                break;
+            case CLOSENESS:
+                node.setColor(visualizer.getColor(((Double) node.getAttribute(closeness)).floatValue(),
+                        (float) 1.1));
+                break;
+            case EIGENVECTOR:
+                node.setColor(visualizer.getColor(((Double) node.getAttribute(eigenvector)).floatValue(),
+                        (float) 1.1));
+                break;
+            case DEGREE:
+                node.setColor(visualizer.getColor((float) (graph.getDegree(node)),
+                        (float) (originalMaxDegree + originalMaxDegree / 3)));
+                break;
+            case ECCENTRICITY:
+                node.setColor(visualizer.getColor(
+                        ((Double) node.getAttribute(eccentricity)).floatValue(),
+                        (float) originalMaxEccentricity + (float) 1.0));
+                break;
+        }
+    }
+
+    private void paintRelativeRange(String centralityType, Node node) {
+        switch (centralityType) {
+            case CENTRALITY_SCORE:
+                float denominator = (float) (rangeBetweenness + rangeCloseness + rangeEigenvector);
+                node.setColor(visualizer.getColor(
+                        ((Double) (
+                                (Double) node.getAttribute(betweenness) - minBetweenness +
+                                        (Double) node.getAttribute(closeness) - minCloseness +
+                                        (Double) node.getAttribute(eigenvector) - minEigenvector)).floatValue(),
+                        (float) (denominator + 0.3)));
+                break;
+            case BETWEENNESS:
+                node.setColor(visualizer.getColor(
+                        ((Double) node.getAttribute(betweenness)).floatValue() - (float) minBetweenness,
+                        (float) rangeBetweenness + (float) rangeBetweenness / 4));
+                break;
+            case CLOSENESS:
+                node.setColor(visualizer.getColor(
+                        ((Double) node.getAttribute(closeness)).floatValue() - (float) minCloseness,
+                        (float) rangeCloseness + (float) 0.1));
+                break;
+            case EIGENVECTOR:
+                node.setColor(visualizer.getColor(
+                        ((Double) node.getAttribute(eigenvector)).floatValue() - (float) minEigenvector,
+                        (float) rangeEigenvector + (float) 0.1));
+                break;
+            case DEGREE:
+                node.setColor(visualizer.getColor((float) (graph.getDegree(node)),
+                        (float) rangeDegree + (float) 1));
+                break;
+            case ECCENTRICITY:
+                node.setColor(visualizer.getColor(
+                        ((Double) node.getAttribute(eccentricity)).floatValue() - (float) minEccentricity,
+                        (float) rangeEccentricity + (float) 1.0));
+                break;
+        }
     }
 }
