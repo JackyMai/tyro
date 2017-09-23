@@ -14,35 +14,15 @@ import java.util.HashMap;
  * This class is used to organise the Visualiser to paint the nodes pending on their centralities.
  */
 public class CentralityPresenter {
-
     Graph graph;
     Visualizer visualizer;
 
-    private double originalMaxEccentricity;
-    private double originalMaxDegree;
+    private double originalMaxEccentricity, originalMaxDegree;
+    private double maxBetweenness, maxCloseness, maxEccentricity, maxEigenvector, maxDegree;
+    private double minBetweenness, minCloseness, minEccentricity, minEigenvector, minDegree;
+    private double rangeBetweenness, rangeCloseness, rangeEccentricity, rangeEigenvector, rangeDegree;
 
-    private double maxBetweenness;
-    private double maxCloseness;
-    private double maxEccentricity;
-    private double maxEigenvector;
-    private double maxDegree;
-
-    private double minBetweenness;
-    private double minCloseness;
-    private double minEccentricity;
-    private double minEigenvector;
-    private double minDegree;
-
-    private double rangeBetweenness;
-    private double rangeCloseness;
-    private double rangeEccentricity;
-    private double rangeEigenvector;
-    private double rangeDegree;
-
-    private Column betweenness;
-    private Column closeness;
-    private Column eccentricity;
-    private Column eigenvector;
+    private Column betweenness, closeness, eccentricity, eigenvector;
 
     private static final String BETWEENNESS = "betweenness";
     private static final String CLOSENESS = "closeness";
@@ -54,7 +34,7 @@ public class CentralityPresenter {
     private static final String ABSOLUTE = "absolute";
     private static final String RELATIVE = "relative";
 
-    public CentralityPresenter(Graph graph, Visualizer visualizer){
+    public CentralityPresenter(Graph graph, Visualizer visualizer) {
         this.graph = graph;
         this.visualizer = visualizer;
     }
@@ -62,7 +42,7 @@ public class CentralityPresenter {
     /**
      * organise the Visualiser to paint the nodes pending on their centralities.
      */
-    public void present(){
+    public void present() {
         GraphModel graphModel = graph.getModel();
 
         //remember what the color of each node is.
@@ -114,7 +94,7 @@ public class CentralityPresenter {
         }
     }
 
-    private void resetExtrema(){
+    private void resetExtrema() {
         // DONT RESET originalMaxEccentricity or originalMaxDegree
         maxBetweenness = 0.0;
         maxCloseness = 0.0;
@@ -129,8 +109,7 @@ public class CentralityPresenter {
         minDegree = Double.POSITIVE_INFINITY;
     }
 
-    private void findExtrema(){
-
+    private void findExtrema() {
         for (Node node : graph.getNodes().toCollection()) {
             double nodeBetweenness = (Double) node.getAttribute(betweenness);
             double nodeClosenness = (Double) node.getAttribute(closeness);
@@ -138,44 +117,24 @@ public class CentralityPresenter {
             double nodeEigenvector = (Double) node.getAttribute(eigenvector);
             double nodeDegree = graph.getDegree(node);
 
-            if (nodeBetweenness > maxBetweenness) {
-                maxBetweenness = nodeBetweenness;
-            }
-            if (nodeBetweenness < minBetweenness) {
-                minBetweenness = nodeBetweenness;
-            }
+            if (nodeBetweenness > maxBetweenness) maxBetweenness = nodeBetweenness;
+            if (nodeBetweenness < minBetweenness) minBetweenness = nodeBetweenness;
 
-            if (nodeClosenness > maxCloseness) {
-                maxCloseness = nodeClosenness;
-            }
-            if (nodeClosenness < minCloseness) {
-                minCloseness = nodeClosenness;
-            }
+            if (nodeClosenness > maxCloseness) maxCloseness = nodeClosenness;
+            if (nodeClosenness < minCloseness) minCloseness = nodeClosenness;
 
-            if (nodeEccentricity > maxEccentricity) {
-                maxEccentricity = nodeEccentricity;
-            }
-            if (nodeEccentricity < minEccentricity) {
-                minEccentricity = nodeEccentricity;
-            }
+            if (nodeEccentricity > maxEccentricity) maxEccentricity = nodeEccentricity;
+            if (nodeEccentricity < minEccentricity) minEccentricity = nodeEccentricity;
 
-            if (nodeEigenvector > maxEigenvector) {
-                maxEigenvector = nodeEigenvector;
-            }
-            if (nodeEigenvector < minEigenvector) {
-                minEigenvector = nodeEigenvector;
-            }
+            if (nodeEigenvector > maxEigenvector) maxEigenvector = nodeEigenvector;
+            if (nodeEigenvector < minEigenvector) minEigenvector = nodeEigenvector;
 
-            if (nodeDegree > maxDegree) {
-                maxDegree = nodeDegree;
-            }
-            if (nodeDegree < minDegree) {
-                minDegree = nodeDegree;
-            }
+            if (nodeDegree > maxDegree) maxDegree = nodeDegree;
+            if (nodeDegree < minDegree) minDegree = nodeDegree;
         }
     }
 
-    private void findRanges(){
+    private void findRanges() {
         rangeBetweenness = maxBetweenness - minBetweenness;
         rangeCloseness = maxCloseness - minCloseness;
         rangeEccentricity = maxEccentricity - minEccentricity;
@@ -183,14 +142,10 @@ public class CentralityPresenter {
         rangeDegree = maxDegree - minDegree;
     }
 
-    private void centralityPaint(String centralityType, String range){
-
-
+    private void centralityPaint(String centralityType, String range) {
         for (Node node : graph.getNodes().toCollection()) {
             if(range.equals(ABSOLUTE)) {
-
-
-                if (centralityType.equals(CENTRALITY_SCORE)){
+                if (centralityType.equals(CENTRALITY_SCORE)) {
                     node.setColor(visualizer.getColor(((Double)(
                                     (Double) node.getAttribute(betweenness) +
                                             (Double) node.getAttribute(closeness) +
@@ -209,17 +164,16 @@ public class CentralityPresenter {
                     node.setColor(visualizer.getColor(((Double) node.getAttribute(eigenvector)).floatValue(),
                             (float) 1.1));
 
-                } else if (centralityType.equals(DEGREE)){
+                } else if (centralityType.equals(DEGREE)) {
                     node.setColor(visualizer.getColor((float)(graph.getDegree(node)),
                             (float)(originalMaxDegree + originalMaxDegree/3)));
 
-                } else if (centralityType.equals(ECCENTRICITY)){
+                } else if (centralityType.equals(ECCENTRICITY)) {
                     node.setColor(visualizer.getColor(
                             ((Double) node.getAttribute(eccentricity)).floatValue(),
                             (float) originalMaxEccentricity + (float) 1.0));
                 }
-            }else
-            if (range.equals(RELATIVE)){
+            } else if (range.equals(RELATIVE)) {
                 if (centralityType.equals(CENTRALITY_SCORE)) {
                     float denominator = (float) (rangeBetweenness + rangeCloseness + rangeEigenvector);
                     node.setColor(visualizer.getColor(
@@ -244,7 +198,7 @@ public class CentralityPresenter {
                             ((Double) node.getAttribute(eigenvector)).floatValue() - (float) minEigenvector,
                             (float) rangeEigenvector + (float)0.1));
 
-                } else if (centralityType.equals(DEGREE)){
+                } else if (centralityType.equals(DEGREE)) {
                     node.setColor(visualizer.getColor((float)(graph.getDegree(node)),
                             (float) rangeDegree + (float)1));
 
