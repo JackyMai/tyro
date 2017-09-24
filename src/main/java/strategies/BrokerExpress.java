@@ -3,6 +3,7 @@ package strategies;
 import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.Node;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -49,6 +50,13 @@ public class BrokerExpress extends Strategy {
                 startNode.setSize(40);
                 endNode.setColor(visualizer.getColor(i));
                 endNode.setSize(40);
+                for (Node node : graph.getNeighbors(startNode).toCollection()){
+                    node.setColor(visualizer.getColor(i));
+                }
+                for (Node node : graph.getNeighbors(endNode).toCollection()){
+                    node.setColor(visualizer.getColor(i));
+                }
+                newcomer.setColor(Color.BLACK);
                 visualizer.updateView();
             }
         }

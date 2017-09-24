@@ -40,8 +40,8 @@ public class Visualizer {
 
     private final boolean SHOW_GRAPH = false;  // Produces a JFrame (doesn't work with a high frame rate)
     private final boolean EXPORT_GRAPH = true;  // Export screenshots of graph
-    private final boolean WARMUP_LAYOUT = false;
-    private final boolean HIGH_FRAME_RATE = true; // Only true if you want to produce pictures for a video
+    private final boolean WARMUP_LAYOUT = false; // Set true for larger graphs so that Layout of nodes has extra time
+    private final boolean HIGH_FRAME_RATE = false; // Only true if you want to produce pictures for a video
     private final int FRAME_RATE = 60;
 
     private final boolean PRESENT_CENTRALITY = false; // Enables Centrality Presenter
@@ -125,8 +125,8 @@ public class Visualizer {
                 updateView(autoLayout);
             }
         } else {
-            // Layout for 1 minute
-            AutoLayout autoLayout = new AutoLayout(1, TimeUnit.MINUTES);
+            // Organise the nodes on the display for 10 seconds
+            AutoLayout autoLayout = new AutoLayout(10, TimeUnit.SECONDS);
             updateView(autoLayout);
         }
 

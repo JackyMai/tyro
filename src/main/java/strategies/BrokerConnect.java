@@ -6,6 +6,7 @@ import org.gephi.graph.api.Node;
 import org.gephi.statistics.plugin.EigenvectorCentrality;
 import org.gephi.statistics.plugin.GraphDistance;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -45,8 +46,12 @@ public class BrokerConnect extends Global {
             if (updateEveryRound) updateCentralities();
             if (export) exportCentralities(newcomer);
             if (visualise) {
+                for (Node node : graph.getNeighbors(selectedNode).toCollection()){
+                    node.setColor(visualizer.getColor(i));
+                }
                 selectedNode.setColor(visualizer.getColor(i));
                 selectedNode.setSize(40);
+                newcomer.setColor(Color.BLACK);
                 visualizer.updateView();
             }
         }
